@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Password
 {
+    using Windows.Storage;
     using Windows.UI.Popups;
 
     /// <summary>
@@ -24,10 +25,13 @@ namespace Password
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        public ApplicationDataContainer settings = ApplicationData.Current.LocalSettings;
+
         public MainPage()
         {
             this.InitializeComponent();
             this.AddPassword.Visibility = Visibility.Collapsed;
+            RetrievePassword();
         }
 
         private void AddPasswordBtn_Click(object sender, RoutedEventArgs e)
@@ -36,9 +40,25 @@ namespace Password
             this.TitleTextBox.Focus(FocusState.Keyboard);
         }
 
+        private void RetrievePassword()
+        {
+            string passwordCollection = string.Empty;
+
+            foreach (KeyValuePair<string, object> pair in this.settings.Values)
+            {
+                 passwordCollection += pair.Key + ", " + pair.Value + " : ";
+            }
+
+            this.PasswordCollectionTextBlock.Text = passwordCollection;
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            this.settings.Values.Add(this.TitleTextBox.Text, this.UserNameTextBox.Text + this.PasswordTextBox.Password);
+
             this.AddPassword.Visibility = Visibility.Collapsed;
+
+            this.RetrievePassword();
         }
     }
 }
