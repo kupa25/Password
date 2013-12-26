@@ -33,6 +33,7 @@ namespace Password
         private void AddPasswordBtn_Click(object sender, RoutedEventArgs e)
         {
             this.AddPassword.Visibility = this.AddPassword.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
+            this.TitleTextBox.Focus(FocusState.Keyboard);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

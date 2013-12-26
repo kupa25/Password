@@ -9,8 +9,9 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <TextBlock HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" Text="Password Manager" VerticalAlignment="Top" FontSize="48"/>
-        <StackPanel HorizontalAlignment="Left" Height="242" Margin="426,322,0,0" VerticalAlignment="Top" Width="400" Name="AddPassword">
-            <TextBox FontSize="30" PlaceholderText="Title"></TextBox>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Name="AddPassword">
+            <TextBlock FontSize="70" FontWeight="Bold">Add Password</TextBlock>
+            <TextBox FontSize="30" PlaceholderText="Title" Name="TitleTextBox"></TextBox>
             <TextBox FontSize="30" PlaceholderText="UserName"></TextBox>
             <PasswordBox FontSize="30" PlaceholderText="Password" ></PasswordBox>
             <Button FontSize="30" Click="Button_Click">Add Password</Button>
