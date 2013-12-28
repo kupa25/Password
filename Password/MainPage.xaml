@@ -8,9 +8,9 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <TextBlock HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" Text="Password Manager" VerticalAlignment="Top" FontSize="48"/>
-        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center">
-            <TextBlock Name="PasswordCollectionTextBlock" FontSize="30"></TextBlock>
+        <StackPanel HorizontalAlignment="Left">
+            <TextBlock HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" Text="Password Manager" VerticalAlignment="Top" FontSize="48"/>
+            <GridView x:Name="PasswordView" SelectionChanged="PasswordView_SelectionChanged" ></GridView>
         </StackPanel>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Name="AddPassword">
             <TextBlock FontSize="70" FontWeight="Bold">Add Password</TextBlock>

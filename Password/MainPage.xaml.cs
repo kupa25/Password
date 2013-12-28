@@ -42,23 +42,29 @@ namespace Password
 
         private void RetrievePassword()
         {
-            string passwordCollection = string.Empty;
+            List<String> itemsList = new List<string>();
 
             foreach (KeyValuePair<string, object> pair in this.settings.Values)
             {
-                 passwordCollection += pair.Key + ", " + pair.Value + " : ";
+                 itemsList.Add(pair.Key + ", " + pair.Value);
             }
 
-            this.PasswordCollectionTextBlock.Text = passwordCollection;
+            this.PasswordView.ItemsSource = itemsList;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.settings.Values.Add(this.TitleTextBox.Text, this.UserNameTextBox.Text + this.PasswordTextBox.Password);
 
+            this.TitleTextBox.Text = this.UserNameTextBox.Text = this.PasswordTextBox.Password = string.Empty;
             this.AddPassword.Visibility = Visibility.Collapsed;
 
             this.RetrievePassword();
+        }
+
+        private void PasswordView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }
