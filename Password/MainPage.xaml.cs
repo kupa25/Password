@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Password
 {
+    using PasswordManager.Domain;
     using Windows.Storage;
     using Windows.UI.Popups;
 
@@ -42,17 +43,18 @@ namespace Password
 
         private void RetrievePassword()
         {
-            List<String> itemsList = new List<string>();
+            List<Password> passwordList = new List<Password>();
 
             foreach (KeyValuePair<string, object> pair in this.settings.Values)
             {
-                 itemsList.Add(pair.Key + ", " + pair.Value);
+                passwordList.Add(new Password { Title = pair.Key.ToString(), UserName = pair.Value.ToString() });
             }
 
-            this.itemsViewSource.Source = itemsList;
+            this.itemsViewSource.Source = passwordList;
+            
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void AddPassword_Click(object sender, RoutedEventArgs e)
         {
             this.settings.Values.Add(this.TitleTextBox.Text, this.UserNameTextBox.Text + this.PasswordTextBox.Password);
 
@@ -64,7 +66,8 @@ namespace Password
 
         private void PasswordView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            MessageDialog test = new MessageDialog("hello");
+            test.ShowAsync();
         }
     }
 }
