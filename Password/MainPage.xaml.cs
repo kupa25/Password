@@ -49,7 +49,7 @@ namespace Password
                  itemsList.Add(pair.Key + ", " + pair.Value);
             }
 
-            this.PasswordView.ItemsSource = itemsList;
+            this.itemsViewSource.Source = itemsList;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

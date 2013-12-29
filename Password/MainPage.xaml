@@ -6,11 +6,30 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+    
+    <Page.Resources>
+        <CollectionViewSource x:Name="itemsViewSource" />
+        
+        <DataTemplate x:Key="IconTextDataTemplate">
+            <StackPanel Orientation="Horizontal" Width="220" Height="60">
+                <Border Background="#66727272" Width="40" Height="40" Margin="10">
+                    <Image Source="/SampleImage.png" Height="32" Width="32" Stretch="UniformToFill"/>
+                </Border>
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Title}" Margin="10,0,0,0" Width="170" Height="20" TextTrimming="WordEllipsis" />
+                    <TextBlock Text="{Binding UserName}" Margin="10,0,0,0" Width="170" Height="20" TextTrimming="WordEllipsis"/>
+                </StackPanel>
+            </StackPanel>
+        </DataTemplate>
+    </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <StackPanel HorizontalAlignment="Left">
             <TextBlock HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" Text="Password Manager" VerticalAlignment="Top" FontSize="48"/>
-            <GridView x:Name="PasswordView" SelectionChanged="PasswordView_SelectionChanged" ></GridView>
+            <GridView x:Name="PasswordView" 
+                      ItemTemplate="{StaticResource IconTextDataTemplate}"
+                      ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
+                      SelectionChanged="PasswordView_SelectionChanged" />
         </StackPanel>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Name="AddPassword">
             <TextBlock FontSize="70" FontWeight="Bold">Add Password</TextBlock>
@@ -23,9 +42,7 @@
 
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton x:Name="AddPasswordBtn" Label="Add Password" Icon="Add" Click="AddPasswordBtn_Click">
-
-            </AppBarButton>
+            <AppBarButton x:Name="AddPasswordBtn" Label="Add Password" Icon="Add" Click="AddPasswordBtn_Click" />
         </CommandBar>
     </Page.BottomAppBar>
 </Page>
