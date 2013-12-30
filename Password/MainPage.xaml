@@ -28,9 +28,9 @@
             <TextBlock HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" Text="Password Manager" VerticalAlignment="Top" FontSize="48"/>
             <GridView x:Name="PasswordView" 
                       ItemTemplate="{StaticResource IconTextDataTemplate}"
-                      ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
-                      SelectionChanged="PasswordView_SelectionChanged" />
+                      ItemsSource="{Binding Source={StaticResource itemsViewSource}}" />
         </StackPanel>
+        
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Name="AddPassword">
             <TextBlock FontSize="70" FontWeight="Bold">Add Password</TextBlock>
             <TextBox PlaceholderText="Title" Name="TitleTextBox" FontSize="30"></TextBox>

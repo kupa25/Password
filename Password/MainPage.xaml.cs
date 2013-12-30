@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Password
 {
+    using Newtonsoft.Json;
     using PasswordManager.Domain;
     using Windows.Storage;
     using Windows.UI.Popups;
@@ -44,10 +45,23 @@ namespace Password
         private void RetrievePassword()
         {
             List<Password> passwordList = new List<Password>();
+            Password deserializedObj;
 
             foreach (KeyValuePair<string, object> pair in this.settings.Values)
             {
-                passwordList.Add(new Password { Title = pair.Key.ToString(), UserName = pair.Value.ToString() });
+                //Try to serialize first, if we fail then we default toString();
+                deserializedObj = null;
+
+                try
+                {
+                    deserializedObj = JsonConvert.DeserializeObject<Password>(pair.Value.ToString());
+                }
+                catch(Exception ex)
+                {
+                    deserializedObj = new Password { Title = pair.Key, UserName = pair.Value.ToString() };
+                }
+
+                passwordList.Add(deserializedObj);
             }
 
             this.itemsViewSource.Source = passwordList;
@@ -56,7 +70,14 @@ namespace Password
 
         private void AddPassword_Click(object sender, RoutedEventArgs e)
         {
-            this.settings.Values.Add(this.TitleTextBox.Text, this.UserNameTextBox.Text + this.PasswordTextBox.Password);
+            var passwordToBeSaved = new Password
+            {
+                UserName = this.UserNameTextBox.Text,
+                Title = this.TitleTextBox.Text,
+                PasswordText = this.PasswordTextBox.Password
+            };
+
+            this.settings.Values.Add(this.TitleTextBox.Text, JsonConvert.SerializeObject(passwordToBeSaved));
 
             this.TitleTextBox.Text = this.UserNameTextBox.Text = this.PasswordTextBox.Password = string.Empty;
             this.AddPassword.Visibility = Visibility.Collapsed;
