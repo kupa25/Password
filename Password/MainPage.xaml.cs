@@ -12,6 +12,7 @@ namespace Password
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
 
     using Newtonsoft.Json;
 
@@ -37,9 +38,6 @@ namespace Password
             this.InitializeComponent();
             this.AddPassword.Visibility = Visibility.Collapsed;
             this.RefreshScreen();
-
-            this.PasswordView.SelectedIndex = -1;
-
         }
 
         /// <summary>
@@ -76,6 +74,7 @@ namespace Password
             }
 
             this.itemsViewSource.Source = passwordList;
+            this.PasswordView.SelectedIndex = -1;
         }
 
         /// <summary>
@@ -87,12 +86,13 @@ namespace Password
         {
             var passwordToBeSaved = new Password
             {
+                KeyGuid = Guid.NewGuid(),
                 UserName = this.UserNameTextBox.Text,
                 Title = this.TitleTextBox.Text,
                 PasswordText = this.PasswordTextBox.Password
             };
 
-            this.settings.Values.Add(this.TitleTextBox.Text, JsonConvert.SerializeObject(passwordToBeSaved));
+            this.settings.Values.Add(passwordToBeSaved.KeyGuid.ToString(), JsonConvert.SerializeObject(passwordToBeSaved));
 
             this.TitleTextBox.Text = this.UserNameTextBox.Text = this.PasswordTextBox.Password = string.Empty;
             this.AddPassword.Visibility = Visibility.Collapsed;
@@ -116,8 +116,9 @@ namespace Password
                 var msg = new MessageDialog(password ?? "Please delete this and recreate");
 
                 // Create the button manually so that we can associate default action and cancel button action
+                msg.Commands.Add(new UICommand("Delete", this.DeletePassword));
                 msg.Commands.Add(new UICommand("Close", null));
-                msg.DefaultCommandIndex = msg.CancelCommandIndex = 0;
+                msg.DefaultCommandIndex = msg.CancelCommandIndex = 1;
 
                 await msg.ShowAsync();
             }
@@ -125,6 +126,24 @@ namespace Password
             {
                 Debug.WriteLine("selected item was null");
             }
+        }
+
+        private void DeletePassword(IUICommand command)
+        {
+            Debug.WriteLine(this.PasswordView.SelectedIndex);
+            var selectedItem = ((Password)this.PasswordView.SelectedItem);
+
+            if (selectedItem != null)
+            {
+                this.settings.Values.Remove(this.settings.Values.First(
+                    item => item.Key == (selectedItem.KeyGuid.Equals(Guid.Empty) ? selectedItem.Title : selectedItem.KeyGuid.ToString())));
+            }
+            else
+            {
+                Debug.WriteLine("selected item was not a Password object");
+            }
+
+            this.RefreshScreen();
         }
     }
 }
