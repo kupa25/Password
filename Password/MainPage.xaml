@@ -36,13 +36,13 @@
             <TextBox PlaceholderText="Title" Name="TitleTextBox" FontSize="30"></TextBox>
             <TextBox PlaceholderText="UserName" Name="UserNameTextBox" FontSize="30"></TextBox>
             <PasswordBox PlaceholderText="Password" Name="PasswordTextBox" FontSize="30"></PasswordBox>
-            <Button FontSize="30" Click="AddPassword_Click">Add Password</Button>
+            <Button FontSize="30" Click="AddPasswordClick">Add Password</Button>
         </StackPanel>
     </Grid>
 
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton x:Name="AddPasswordBtn" Label="Add Password" Icon="Add" Click="AddPasswordBtn_Click" />
+            <AppBarButton Label="Add Password" Icon="Add" Click="ShowAddPasswordModal" />
         </CommandBar>
     </Page.BottomAppBar>
 </Page>

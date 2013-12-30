@@ -1,62 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MainPage.xaml.cs" company="Kshitij Upadhyay">
+//   Working copy by Kshitij Upadhyay
+// </copyright>
+// <summary>
+//   An empty page that can be used on its own or navigated to within a Frame.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Password
 {
+    using System;
+    using System.Collections.Generic;
+
     using Newtonsoft.Json;
+
     using PasswordManager.Domain;
+
     using Windows.Storage;
-    using Windows.UI.Popups;
+    using Windows.UI.Xaml;
+    using Windows.UI.Xaml.Controls;
 
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        public ApplicationDataContainer settings = ApplicationData.Current.LocalSettings;
+        /// <summary>
+        /// The settings.
+        /// </summary>
+        private ApplicationDataContainer settings = ApplicationData.Current.LocalSettings;
 
         public MainPage()
         {
             this.InitializeComponent();
             this.AddPassword.Visibility = Visibility.Collapsed;
-            RetrievePassword();
+            this.RefreshScreen();
         }
 
-        private void AddPasswordBtn_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Show Add password modal.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void ShowAddPasswordModal(object sender, RoutedEventArgs e)
         {
             this.AddPassword.Visibility = this.AddPassword.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
             this.TitleTextBox.Focus(FocusState.Keyboard);
         }
 
-        private void RetrievePassword()
+        /// <summary>
+        /// The retrieve password.
+        /// </summary>
+        private void RefreshScreen()
         {
-            List<Password> passwordList = new List<Password>();
-            Password deserializedObj;
+            var passwordList = new List<Password>();
 
             foreach (KeyValuePair<string, object> pair in this.settings.Values)
             {
-                //Try to serialize first, if we fail then we default toString();
-                deserializedObj = null;
-
+                Password deserializedObj;
                 try
                 {
                     deserializedObj = JsonConvert.DeserializeObject<Password>(pair.Value.ToString());
                 }
-                catch(Exception ex)
+                catch (Exception)
                 {
                     deserializedObj = new Password { Title = pair.Key, UserName = pair.Value.ToString() };
                 }
@@ -65,10 +75,18 @@ namespace Password
             }
 
             this.itemsViewSource.Source = passwordList;
-            
         }
 
-        private void AddPassword_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Takes the users input and save the password
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void AddPasswordClick(object sender, RoutedEventArgs e)
         {
             var passwordToBeSaved = new Password
             {
@@ -82,13 +100,7 @@ namespace Password
             this.TitleTextBox.Text = this.UserNameTextBox.Text = this.PasswordTextBox.Password = string.Empty;
             this.AddPassword.Visibility = Visibility.Collapsed;
 
-            this.RetrievePassword();
-        }
-
-        private void PasswordView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            MessageDialog test = new MessageDialog("hello");
-            test.ShowAsync();
+            this.RefreshScreen();
         }
     }
 }
