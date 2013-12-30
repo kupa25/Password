@@ -11,12 +11,14 @@ namespace Password
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
 
     using Newtonsoft.Json;
 
     using PasswordManager.Domain;
 
     using Windows.Storage;
+    using Windows.UI.Popups;
     using Windows.UI.Xaml;
     using Windows.UI.Xaml.Controls;
 
@@ -35,17 +37,16 @@ namespace Password
             this.InitializeComponent();
             this.AddPassword.Visibility = Visibility.Collapsed;
             this.RefreshScreen();
+
+            this.PasswordView.SelectedIndex = -1;
+
         }
 
         /// <summary>
         /// Show Add password modal.
         /// </summary>
-        /// <param name="sender">
-        /// The sender.
-        /// </param>
-        /// <param name="e">
-        /// The e.
-        /// </param>
+        /// <param name="sender"> The sender. </param>
+        /// <param name="e"> The e. </param>
         private void ShowAddPasswordModal(object sender, RoutedEventArgs e)
         {
             this.AddPassword.Visibility = this.AddPassword.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
@@ -80,12 +81,8 @@ namespace Password
         /// <summary>
         /// Takes the users input and save the password
         /// </summary>
-        /// <param name="sender">
-        /// The sender.
-        /// </param>
-        /// <param name="e">
-        /// The e.
-        /// </param>
+        /// <param name="sender"> The sender. </param>
+        /// <param name="e"> The e. </param>
         private void AddPasswordClick(object sender, RoutedEventArgs e)
         {
             var passwordToBeSaved = new Password
@@ -101,6 +98,33 @@ namespace Password
             this.AddPassword.Visibility = Visibility.Collapsed;
 
             this.RefreshScreen();
+        }
+
+        /// <summary>
+        /// The password view_ tapped.
+        /// </summary>
+        /// <param name="sender"> The sender. </param>
+        /// <param name="e"> The e. </param>
+        private async void PasswordViewTapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            var selectedItem = (Password)((GridView)sender).SelectedItem;
+
+            if (selectedItem != null)
+            {
+                string password = selectedItem.PasswordText;
+
+                var msg = new MessageDialog(password ?? "Please delete this and recreate");
+
+                // Create the button manually so that we can associate default action and cancel button action
+                msg.Commands.Add(new UICommand("Close", null));
+                msg.DefaultCommandIndex = msg.CancelCommandIndex = 0;
+
+                await msg.ShowAsync();
+            }
+            else
+            {
+                Debug.WriteLine("selected item was null");
+            }
         }
     }
 }
