@@ -14,6 +14,8 @@ namespace Password
     using System.Diagnostics;
     using System.Linq;
 
+    using Windows.ApplicationModel;
+
     using Newtonsoft.Json;
 
     using PasswordManager.Domain;
@@ -35,9 +37,15 @@ namespace Password
 
         public MainPage()
         {
+            Application.Current.Suspending += CurrentOnSuspending;
             this.InitializeComponent();
             this.AddPassword.Visibility = Visibility.Collapsed;
             this.RefreshScreen();
+        }
+
+        private void CurrentOnSuspending(object sender, SuspendingEventArgs suspendingEventArgs)
+        {
+            // TODO : This is the time to save app data in case the process is terminated.
         }
 
         /// <summary>
