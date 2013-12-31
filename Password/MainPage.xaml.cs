@@ -38,9 +38,15 @@ namespace Password
         public MainPage()
         {
             Application.Current.Suspending += CurrentOnSuspending;
+            Application.Current.Resuming += Current_Resuming;
             this.InitializeComponent();
             this.AddPassword.Visibility = Visibility.Collapsed;
             this.RefreshScreen();
+        }
+
+        void Current_Resuming(object sender, object e)
+        {
+            // TODO: Currently we aren't using this part of the app
         }
 
         private void CurrentOnSuspending(object sender, SuspendingEventArgs suspendingEventArgs)
