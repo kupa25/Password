@@ -31,7 +31,7 @@ namespace Password
         /// <summary>
         /// The settings.
         /// </summary>
-        private ApplicationDataContainer settings = ApplicationData.Current.LocalSettings;
+        private ApplicationDataContainer settings = ApplicationData.Current.RoamingSettings;
 
         public MainPage()
         {
@@ -130,11 +130,13 @@ namespace Password
 
         private void DeletePassword(IUICommand command)
         {
-            Debug.WriteLine(this.PasswordView.SelectedIndex);
             var selectedItem = ((Password)this.PasswordView.SelectedItem);
+            Debug.WriteLine("About to delete :" + selectedItem);
 
             if (selectedItem != null)
             {
+                Debug.WriteLine("Delete is going to match on the following key : " + (selectedItem.KeyGuid.Equals(Guid.Empty) ? selectedItem.Title : selectedItem.KeyGuid.ToString()));
+
                 this.settings.Values.Remove(this.settings.Values.First(
                     item => item.Key == (selectedItem.KeyGuid.Equals(Guid.Empty) ? selectedItem.Title : selectedItem.KeyGuid.ToString())));
             }
@@ -144,6 +146,28 @@ namespace Password
             }
 
             this.RefreshScreen();
+        }
+
+        private void RemovePasswordList(object sender, RoutedEventArgs e)
+        {
+            MessageDialog confirm = new MessageDialog("This will remove your entire password.  Are you sure?");
+            confirm.Commands.Add(new UICommand("OK", this.RemovePasswordList));
+            confirm.Commands.Add(new UICommand("Cancel"));
+            confirm.DefaultCommandIndex = 0;
+            confirm.CancelCommandIndex = 1;
+
+            confirm.ShowAsync();
+        }
+
+        private void RemovePasswordList(IUICommand command)
+        {
+            this.settings.Values.Clear();
+            this.RefreshScreen();
+        }
+
+        private void MyCustomGridView_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            this.AddPassword.Visibility = Visibility.Collapsed;
         }
     }
 }
