@@ -15,6 +15,8 @@ namespace Password
     using System.Linq;
 
     using Windows.ApplicationModel;
+    using Windows.System;
+    using Windows.UI.ApplicationSettings;
 
     using Newtonsoft.Json;
 
@@ -37,11 +39,23 @@ namespace Password
 
         public MainPage()
         {
-            Application.Current.Suspending += CurrentOnSuspending;
-            Application.Current.Resuming += Current_Resuming;
+            Application.Current.Suspending += this.CurrentOnSuspending;
+            Application.Current.Resuming += this.Current_Resuming;
+            SettingsPane.GetForCurrentView().CommandsRequested += this.CommandsRequested;
+
             this.InitializeComponent();
             this.AddPassword.Visibility = Visibility.Collapsed;
             this.RefreshScreen();
+        }
+
+        private void CommandsRequested(SettingsPane sender, SettingsPaneCommandsRequestedEventArgs args)
+        {
+            args.Request.ApplicationCommands.Add(new SettingsCommand("privacypolicy", "Privacy policy", GetPrivacyPolicyAsync));
+        }
+
+        private async void GetPrivacyPolicyAsync(IUICommand command)
+        {
+            await Launcher.LaunchUriAsync(new Uri("http://kshitijwebspace.azurewebsites.net/"));
         }
 
         void Current_Resuming(object sender, object e)

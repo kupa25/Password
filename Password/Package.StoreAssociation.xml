@@ -354,8 +354,6 @@
       <ReservedName>PasswordPal</ReservedName>
     </ReservedNames>
   </ProductReservedInfo>
-  <AccountPackageIdentityNames>
-    <MainPackageIdentityName>31366Kshitij.SyncPassword</MainPackageIdentityName>
-  </AccountPackageIdentityNames>
+  <AccountPackageIdentityNames />
   <PackageInfoList LandingUrl="https://appdev.microsoft.com:443/StorePortals/Developer/Catalog/ReleaseAnchor/45b9395f-0faf-4731-9c90-3f531d436b20" />
 </StoreAssociation>
