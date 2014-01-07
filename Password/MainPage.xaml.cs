@@ -55,7 +55,7 @@ namespace Password
 
         private async void GetPrivacyPolicyAsync(IUICommand command)
         {
-            await Launcher.LaunchUriAsync(new Uri("http://kshitijwebspace.azurewebsites.net/"));
+            await Launcher.LaunchUriAsync(new Uri("http://kshitijwebspace.azurewebsites.net/Help"));
         }
 
         void Current_Resuming(object sender, object e)
