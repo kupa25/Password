@@ -75,8 +75,10 @@ namespace Password
         /// <param name="e"> The e. </param>
         private void ShowAddPasswordModal(object sender, RoutedEventArgs e)
         {
-            this.AddPassword.Visibility = this.AddPassword.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
+            this.AddPassword.Visibility = Visibility.Visible;
             this.TitleTextBox.Focus(FocusState.Keyboard);
+
+            this.BottomAppBar.IsOpen = false;
         }
 
         /// <summary>
@@ -198,6 +200,14 @@ namespace Password
         private void MyCustomGridView_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
             this.AddPassword.Visibility = Visibility.Collapsed;
+        }
+
+        private void PasswordTextBox_KeyUp(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            if(e.Key == VirtualKey.Enter)
+            {
+                this.AddPasswordClick(sender, null);
+            }
         }
     }
 }

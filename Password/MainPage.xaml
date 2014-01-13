@@ -41,7 +41,7 @@
             <TextBlock FontSize="70" FontWeight="Bold">Add Password</TextBlock>
             <TextBox PlaceholderText="Title" Name="TitleTextBox" FontSize="30"></TextBox>
             <TextBox PlaceholderText="UserName" Name="UserNameTextBox" FontSize="30"></TextBox>
-            <PasswordBox PlaceholderText="Password" Name="PasswordTextBox" FontSize="30"></PasswordBox>
+            <PasswordBox PlaceholderText="Password" Name="PasswordTextBox" FontSize="30" KeyUp="PasswordTextBox_KeyUp"></PasswordBox>
             <Button FontSize="30" Click="AddPasswordClick" BorderBrush="{x:Null}" Foreground="#FF250D0D">
                 <Button.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
