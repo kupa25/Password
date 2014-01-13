@@ -24,14 +24,13 @@
     </Page.Resources>
 
     <Grid Name="MyCustomGridView" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Tapped="MyCustomGridView_Tapped">
-        <StackPanel HorizontalAlignment="Left">
             <TextBlock HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" Text="Password Manager" VerticalAlignment="Top" FontSize="48"/>
-            <GridView x:Name="PasswordView"
-                      ItemTemplate="{StaticResource IconTextDataTemplate}"
-                      ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
-                      Tapped="PasswordViewTapped"
-                       />
-        </StackPanel>
+        <GridView x:Name="PasswordView"
+                    Padding="0,120,0,0"
+                    ItemTemplate="{StaticResource IconTextDataTemplate}"
+                    ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
+                    Tapped="PasswordViewTapped"
+                    />
 
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Name="AddPassword" Background="#FF933131">
             <StackPanel.ChildrenTransitions>

@@ -60,7 +60,7 @@ namespace Password
 
         void Current_Resuming(object sender, object e)
         {
-            // TODO: Currently we aren't using this part of the app
+            this.RefreshScreen();
         }
 
         private void CurrentOnSuspending(object sender, SuspendingEventArgs suspendingEventArgs)
@@ -100,6 +100,8 @@ namespace Password
 
                 passwordList.Add(deserializedObj);
             }
+
+            passwordList.Sort();
 
             this.itemsViewSource.Source = passwordList;
             this.PasswordView.SelectedIndex = -1;
