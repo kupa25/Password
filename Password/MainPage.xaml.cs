@@ -37,6 +37,25 @@ namespace Password
         /// </summary>
         private ApplicationDataContainer settings = ApplicationData.Current.RoamingSettings;
 
+        private List<Password> cachedPassword;
+
+        private List<Password> cachedListOfPassword {
+            get
+            {
+                if(cachedPassword == null)
+                {
+                    cachedPassword = new List<Password>();
+                }
+
+                return cachedPassword;
+            }
+
+            set
+            {
+                cachedPassword = value;
+            }
+        }
+
         public MainPage()
         {
             Application.Current.Suspending += this.CurrentOnSuspending;
@@ -82,31 +101,50 @@ namespace Password
         }
 
         /// <summary>
-        /// The retrieve password.
+        /// Refresh the Grid View
         /// </summary>
         private void RefreshScreen()
         {
+            var passwordList = RetreivePassword();
+
+            this.itemsViewSource.Source = null;
+            this.itemsViewSource.Source = passwordList;
+            this.PasswordView.SelectedIndex = -1;
+        }
+
+        private List<Password> RetreivePassword()
+        {
+            //If information is cached then we will add the newly added password to the cache and return it to the user.
+
             var passwordList = new List<Password>();
 
-            foreach (KeyValuePair<string, object> pair in this.settings.Values)
+            if (cachedListOfPassword == null)
             {
-                Password deserializedObj;
-                try
+                foreach (KeyValuePair<string, object> pair in this.settings.Values)
                 {
-                    deserializedObj = JsonConvert.DeserializeObject<Password>(pair.Value.ToString());
-                }
-                catch (Exception)
-                {
-                    deserializedObj = new Password { Title = pair.Key, UserName = pair.Value.ToString() };
+                    Password deserializedObj;
+                    try
+                    {
+                        deserializedObj = JsonConvert.DeserializeObject<Password>(pair.Value.ToString());
+                    }
+                    catch (Exception)
+                    {
+                        deserializedObj = new Password { Title = pair.Key, UserName = pair.Value.ToString() };
+                    }
+
+                    passwordList.Add(deserializedObj);
                 }
 
-                passwordList.Add(deserializedObj);
+                cachedListOfPassword = passwordList;
+            }
+            else
+            {
+                passwordList = cachedListOfPassword;
             }
 
             passwordList.Sort();
 
-            this.itemsViewSource.Source = passwordList;
-            this.PasswordView.SelectedIndex = -1;
+            return passwordList;
         }
 
         /// <summary>
@@ -123,6 +161,8 @@ namespace Password
                 Title = this.TitleTextBox.Text,
                 PasswordText = this.PasswordTextBox.Password
             };
+
+            cachedListOfPassword.Add(passwordToBeSaved);
 
             this.settings.Values.Add(passwordToBeSaved.KeyGuid.ToString(), JsonConvert.SerializeObject(passwordToBeSaved));
 
@@ -171,6 +211,8 @@ namespace Password
 
                 this.settings.Values.Remove(this.settings.Values.First(
                     item => item.Key == (selectedItem.KeyGuid.Equals(Guid.Empty) ? selectedItem.Title : selectedItem.KeyGuid.ToString())));
+
+                cachedListOfPassword.Remove(selectedItem);
             }
             else
             {
@@ -180,7 +222,7 @@ namespace Password
             this.RefreshScreen();
         }
 
-        private void RemovePasswordList(object sender, RoutedEventArgs e)
+        private async void RemovePasswordList(object sender, RoutedEventArgs e)
         {
             MessageDialog confirm = new MessageDialog("This will remove your entire password.  Are you sure?");
             confirm.Commands.Add(new UICommand("OK", this.RemovePasswordList));
@@ -188,12 +230,13 @@ namespace Password
             confirm.DefaultCommandIndex = 0;
             confirm.CancelCommandIndex = 1;
 
-            confirm.ShowAsync();
+            await confirm.ShowAsync();
         }
 
         private void RemovePasswordList(IUICommand command)
         {
             this.settings.Values.Clear();
+            cachedListOfPassword = null;
             this.RefreshScreen();
         }
 
