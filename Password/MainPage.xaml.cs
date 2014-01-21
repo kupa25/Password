@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Password
+namespace PasswordManager
 {
     using System;
     using System.Collections.Generic;
@@ -26,36 +26,13 @@ namespace Password
     using Windows.UI.Popups;
     using Windows.UI.Xaml;
     using Windows.UI.Xaml.Controls;
+    using PasswordManager.Utility;
 
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        /// <summary>
-        /// The settings.
-        /// </summary>
-        private ApplicationDataContainer settings = ApplicationData.Current.RoamingSettings;
-
-        private List<Password> cachedPassword;
-
-        private List<Password> cachedListOfPassword {
-            get
-            {
-                if(cachedPassword == null)
-                {
-                    cachedPassword = new List<Password>();
-                }
-
-                return cachedPassword;
-            }
-
-            set
-            {
-                cachedPassword = value;
-            }
-        }
-
         public MainPage()
         {
             Application.Current.Suspending += this.CurrentOnSuspending;
@@ -65,6 +42,13 @@ namespace Password
             this.InitializeComponent();
             this.AddPassword.Visibility = Visibility.Collapsed;
             this.RefreshScreen();
+
+            //System.Threading.Timer = new System.Threading.Timer(this.TimerCall,null,)
+        }
+
+        public void TimerCall()
+        {
+            //Nothing yet
         }
 
         private void CommandsRequested(SettingsPane sender, SettingsPaneCommandsRequestedEventArgs args)
@@ -105,46 +89,11 @@ namespace Password
         /// </summary>
         private void RefreshScreen()
         {
-            var passwordList = RetreivePassword();
+            var passwordList = Storage.RetreivePassword();
 
             this.itemsViewSource.Source = null;
             this.itemsViewSource.Source = passwordList;
             this.PasswordView.SelectedIndex = -1;
-        }
-
-        private List<Password> RetreivePassword()
-        {
-            //If information is cached then we will add the newly added password to the cache and return it to the user.
-
-            var passwordList = new List<Password>();
-
-            if (cachedListOfPassword == null)
-            {
-                foreach (KeyValuePair<string, object> pair in this.settings.Values)
-                {
-                    Password deserializedObj;
-                    try
-                    {
-                        deserializedObj = JsonConvert.DeserializeObject<Password>(pair.Value.ToString());
-                    }
-                    catch (Exception)
-                    {
-                        deserializedObj = new Password { Title = pair.Key, UserName = pair.Value.ToString() };
-                    }
-
-                    passwordList.Add(deserializedObj);
-                }
-
-                cachedListOfPassword = passwordList;
-            }
-            else
-            {
-                passwordList = cachedListOfPassword;
-            }
-
-            passwordList.Sort();
-
-            return passwordList;
         }
 
         /// <summary>
@@ -162,9 +111,7 @@ namespace Password
                 PasswordText = this.PasswordTextBox.Password
             };
 
-            cachedListOfPassword.Add(passwordToBeSaved);
-
-            this.settings.Values.Add(passwordToBeSaved.KeyGuid.ToString(), JsonConvert.SerializeObject(passwordToBeSaved));
+            Storage.AddPassword(passwordToBeSaved);
 
             this.TitleTextBox.Text = this.UserNameTextBox.Text = this.PasswordTextBox.Password = string.Empty;
             this.AddPassword.Visibility = Visibility.Collapsed;
@@ -202,22 +149,11 @@ namespace Password
 
         private void DeletePassword(IUICommand command)
         {
+
             var selectedItem = ((Password)this.PasswordView.SelectedItem);
             Debug.WriteLine("About to delete :" + selectedItem);
 
-            if (selectedItem != null)
-            {
-                Debug.WriteLine("Delete is going to match on the following key : " + (selectedItem.KeyGuid.Equals(Guid.Empty) ? selectedItem.Title : selectedItem.KeyGuid.ToString()));
-
-                this.settings.Values.Remove(this.settings.Values.First(
-                    item => item.Key == (selectedItem.KeyGuid.Equals(Guid.Empty) ? selectedItem.Title : selectedItem.KeyGuid.ToString())));
-
-                cachedListOfPassword.Remove(selectedItem);
-            }
-            else
-            {
-                Debug.WriteLine("selected item was not a Password object");
-            }
+            Storage.DeletePassword(selectedItem);
 
             this.RefreshScreen();
         }
@@ -235,8 +171,8 @@ namespace Password
 
         private void RemovePasswordList(IUICommand command)
         {
-            this.settings.Values.Clear();
-            cachedListOfPassword = null;
+            Storage.RemovePasswordList();
+
             this.RefreshScreen();
         }
 

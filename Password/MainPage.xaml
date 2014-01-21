@@ -1,8 +1,8 @@
 ﻿<Page
-    x:Class="Password.MainPage"
+    x:Class="PasswordManager.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Password"
+    xmlns:local="using:PasswordManager"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -56,6 +56,7 @@
     <Page.BottomAppBar>
         <CommandBar>
             <AppBarButton Label="Add Password" Icon="Add" Click="ShowAddPasswordModal" />
+            <AppBarSeparator></AppBarSeparator>
             <AppBarButton Label="Clear Password List" Icon="Delete" Click="RemovePasswordList" />
         </CommandBar>
     </Page.BottomAppBar>
