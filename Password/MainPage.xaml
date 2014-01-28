@@ -5,31 +5,30 @@
     xmlns:local="using:PasswordManager"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Foreground="Black"
     mc:Ignorable="d">
 
     <Page.Resources>
         <CollectionViewSource x:Name="itemsViewSource" />
 
-        <DataTemplate x:Key="IconTextDataTemplate">
+        <DataTemplate x:Key="PasswordDisplayTemplate">
             <StackPanel Orientation="Horizontal" Width="220" Height="60">
-                <Border Background="#66727272" Width="40" Height="40" Margin="10">
-                    <Image Source="/SampleImage.png" Height="32" Width="32" Stretch="UniformToFill"/>
+                <Border Background="#66727272" Width="40" Height="40" Margin="10" CornerRadius="50">
+                    <TextBlock Text="{Binding AlphaIcon}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </Border>
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center" >
                     <TextBlock Text="{Binding Title}" Margin="10,0,0,0" Width="170" Height="20" TextTrimming="WordEllipsis" />
-                    <TextBlock Text="{Binding UserName}" Margin="10,0,0,0" Width="170" Height="20" TextTrimming="WordEllipsis"/>
                 </StackPanel>
             </StackPanel>
         </DataTemplate>
     </Page.Resources>
 
-    <Grid Name="MyCustomGridView" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Tapped="MyCustomGridView_Tapped">
-            <TextBlock HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" Text="Password Manager" VerticalAlignment="Top" FontSize="48"/>
+    <Grid Name="MyCustomGridView" Background="White" Tapped="MyCustomGridView_Tapped">
+        <TextBlock HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" Text="Password Manager" VerticalAlignment="Top" FontSize="48"/>
         <GridView x:Name="PasswordView"
-                    Padding="0,120,0,0"
-                    ItemTemplate="{StaticResource IconTextDataTemplate}"
+                    ItemTemplate="{StaticResource PasswordDisplayTemplate}"
                     ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
-                    Tapped="PasswordViewTapped"
+                    Tapped="PasswordViewTapped" Margin="0,120,0,0"
                     />
 
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Name="AddPassword" Background="#FF933131">
@@ -38,7 +37,7 @@
                     <EdgeUIThemeTransition/>
                 </TransitionCollection>
             </StackPanel.ChildrenTransitions>
-            <TextBlock FontSize="70" FontWeight="Bold">Add Password</TextBlock>
+            <TextBlock FontSize="70" FontWeight="Bold" Foreground="White">Add Password</TextBlock>
             <TextBox PlaceholderText="Title" Name="TitleTextBox" FontSize="30"></TextBox>
             <TextBox PlaceholderText="UserName" Name="UserNameTextBox" FontSize="30"></TextBox>
             <PasswordBox PlaceholderText="Password" Name="PasswordTextBox" FontSize="30" KeyUp="PasswordTextBox_KeyUp"></PasswordBox>

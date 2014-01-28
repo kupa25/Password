@@ -69,6 +69,7 @@ namespace PasswordManager
 
         public void SyncPassword(object state)
         {
+            Debug.WriteLine("I'm going to try to sync");
             Storage.sync();
         }
 
@@ -131,9 +132,9 @@ namespace PasswordManager
 
             if (selectedItem != null)
             {
-                string password = selectedItem.PasswordText;
+                string message = "UserName: " + selectedItem.UserName + "\n" + "Password: " + selectedItem.PasswordText;
 
-                var msg = new MessageDialog(password ?? "Please delete this and recreate");
+                var msg = new MessageDialog(message ?? "Please delete this and recreate");
 
                 // Create the button manually so that we can associate default action and cancel button action
                 msg.Commands.Add(new UICommand("Delete", this.DeletePassword));
