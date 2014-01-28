@@ -43,12 +43,7 @@ namespace PasswordManager
             this.AddPassword.Visibility = Visibility.Collapsed;
             this.RefreshScreen();
 
-            //System.Threading.Timer = new System.Threading.Timer(this.TimerCall,null,)
-        }
-
-        public void TimerCall()
-        {
-            //Nothing yet
+            System.Threading.Timer backgroundThread = new System.Threading.Timer(this.SyncPassword, null, 5000, 5000);
         }
 
         private void CommandsRequested(SettingsPane sender, SettingsPaneCommandsRequestedEventArgs args)
@@ -63,12 +58,18 @@ namespace PasswordManager
 
         void Current_Resuming(object sender, object e)
         {
+            this.SyncPassword(null);
             this.RefreshScreen();
         }
 
         private void CurrentOnSuspending(object sender, SuspendingEventArgs suspendingEventArgs)
         {
             // TODO : This is the time to save app data in case the process is terminated.
+        }
+
+        public void SyncPassword(object state)
+        {
+            Storage.sync();
         }
 
         /// <summary>

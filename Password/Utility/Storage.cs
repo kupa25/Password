@@ -73,7 +73,7 @@ namespace PasswordManager.Utility
             }
         }
 
-        private void sync()
+        public static void sync()
         {
             if (Helper.IsInternet)
             {
