@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Storage;
-using PasswordManager.Domain;
-using Newtonsoft.Json;
 using System.Diagnostics;
-using Windows.UI.Popups;
+using Windows.Storage;
+using Newtonsoft.Json;
+using PasswordManager.Helper.Domain;
 
-namespace PasswordManager.Utility
+namespace PasswordManager.Helper.Utility
 {
     public class Storage
     {
@@ -27,36 +23,33 @@ namespace PasswordManager.Utility
             {
                 if (passwordList == null)
                 {
-                    passwordList = new List<Password>();
+                    passwordList = GetPassword(localStorage);
+
+                    if (Helper.IsInternet)
+                    {
+                        if (passwordList.Count <= 0)
+                        {
+                            passwordList = GetPassword(cloudStorage);
+                        }
+                    }
                 }
 
                 return passwordList;
             }
-
-            set
-            {
-                passwordList = value;
-            }
+            set { passwordList = value; }
         }
 
         public static List<Password> RetreivePassword()
         {
-            if (cachedPasswordList.Count <= 0 && localStorage != null)
-            {
-                GetPassword(localStorage);
-            }
-            else if (cachedPasswordList == null && localStorage == null)
-            {
-                GetPassword(cloudStorage);
-            }
-
             cachedPasswordList.Sort();
 
             return cachedPasswordList;
         }
 
-        private static void GetPassword(ApplicationDataContainer storage)
+        private static List<Password> GetPassword(ApplicationDataContainer storage)
         {
+            List<Password> passwords = new List<Password>();
+
             foreach (KeyValuePair<string, object> pair in storage.Values)
             {
                 Password deserializedObj;
@@ -69,25 +62,40 @@ namespace PasswordManager.Utility
                     deserializedObj = new Password { Title = pair.Key, UserName = pair.Value.ToString() };
                 }
 
-                cachedPasswordList.Add(deserializedObj);
+                passwords.Add(deserializedObj);
             }
+
+            return passwords;
         }
 
         public static void sync()
         {
+            Debug.WriteLine("Trying to Synchronize");
+
             if (Helper.IsInternet)
             {
-                //download the cloud storage
-                ApplicationDataContainer tempStorage = cloudStorage;
-
-                //if there is any difference between local and cloud storage then store them in the downloaded copy
+                // sync from up from cache to cloud
                 foreach (Password pwd in cachedPasswordList)
                 {
-                    if (!tempStorage.Values.Contains(new KeyValuePair<string, object>(pwd.KeyGuid.ToString(), JsonConvert.SerializeObject(pwd))))
+                    if (!cloudStorage.Values.Contains(new KeyValuePair<string, object>(pwd.KeyGuid.ToString(), JsonConvert.SerializeObject(pwd))))
                     {
-                        tempStorage.Values.Add(pwd.KeyGuid.ToString(), JsonConvert.SerializeObject(pwd));
+                        Debug.WriteLine("SYNC UP: "+ pwd);
+                        cloudStorage.Values.Add(pwd.KeyGuid.ToString(), JsonConvert.SerializeObject(pwd));
                     }
                 }
+
+                // Sync stuff down from cloud to local
+                foreach (Password pwd in GetPassword(cloudStorage))
+                {
+                    if (!localStorage.Values.Contains(new KeyValuePair<string, object>(pwd.KeyGuid.ToString(), JsonConvert.SerializeObject(pwd))))
+                    {
+                        Debug.WriteLine("SYNC Down: " + pwd);
+                        localStorage.Values.Add(pwd.KeyGuid.ToString(), JsonConvert.SerializeObject(pwd));
+                    }
+                }
+
+                // update the cache from local
+                cachedPasswordList = GetPassword(localStorage);
             }
         }
 
@@ -97,6 +105,11 @@ namespace PasswordManager.Utility
             {
                 cachedPasswordList.Add(pwd);
                 localStorage.Values.Add(pwd.KeyGuid.ToString(), JsonConvert.SerializeObject(pwd));
+
+                if (Helper.IsInternet)
+                {
+                    cloudStorage.Values.Add(pwd.KeyGuid.ToString(), JsonConvert.SerializeObject(pwd));
+                }
             }
         }
 
@@ -120,8 +133,7 @@ namespace PasswordManager.Utility
         {
             cachedPasswordList.Clear();
             localStorage.Values.Clear();
-
-            //we will not sync here as, the user may want to undo.
+            cloudStorage.Values.Clear();
         }
     }
 }

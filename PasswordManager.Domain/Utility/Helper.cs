@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Networking.Connectivity;
-using PasswordManager.Domain;
+﻿using Windows.Networking.Connectivity;
 
-namespace PasswordManager.Utility
+namespace PasswordManager.Helper.Utility
 {
     public class Helper
     {

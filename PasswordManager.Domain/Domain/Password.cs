@@ -1,8 +1,7 @@
-﻿namespace PasswordManager.Domain
-{
-    using System;
-    using System.ComponentModel.DataAnnotations;
+﻿using System;
 
+namespace PasswordManager.Helper.Domain
+{
     public class Password : IComparable
     {
         public string Title { get; set; }
@@ -19,7 +18,7 @@
 
                 //If there is only 1 word then we abbrv to first three letters
                 if (words.Length == 1)
-                    return words[0].Substring(0,1).ToUpperInvariant() + words[0].Substring(1, 2).ToLowerInvariant();
+                    return words[0].Substring(0,1).ToUpperInvariant();
 
                 //Abbrv using the first and the last word
                 return words[0].Substring(0, 1).ToUpper() + " " + words[words.Length - 1].Substring(0, 1).ToUpper();

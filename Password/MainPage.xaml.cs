@@ -7,26 +7,21 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Windows.ApplicationModel.Background;
+using Windows.UI.Core;
+using PasswordManager.Helper.Domain;
+using PasswordManager.Helper.Utility;
+
 namespace PasswordManager
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Linq;
-
     using Windows.ApplicationModel;
     using Windows.System;
     using Windows.UI.ApplicationSettings;
-
-    using Newtonsoft.Json;
-
-    using PasswordManager.Domain;
-
-    using Windows.Storage;
     using Windows.UI.Popups;
     using Windows.UI.Xaml;
     using Windows.UI.Xaml.Controls;
-    using PasswordManager.Utility;
 
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -41,9 +36,44 @@ namespace PasswordManager
 
             this.InitializeComponent();
             this.AddPassword.Visibility = Visibility.Collapsed;
+
+            Storage.sync();
+
             this.RefreshScreen();
 
-            System.Threading.Timer backgroundThread = new System.Threading.Timer(this.SyncPassword, null, 5000, 5000);
+            var taskRegistered = false;
+            var exampleTaskName = "BackgroundTask";
+
+            foreach (var task in BackgroundTaskRegistration.AllTasks)
+            {
+                if (task.Value.Name == exampleTaskName)
+                {
+                    taskRegistered = true;
+
+                    task.Value.Completed += OnBackGroundTaskCompleted;
+                    break;
+                }
+            }
+
+            BackgroundTaskRegistration myTask = null;
+
+            if (!taskRegistered)
+            {
+                var builder = new BackgroundTaskBuilder();
+
+                builder.Name = exampleTaskName;
+                builder.TaskEntryPoint = "PasswordManager.Background.BackgroundTask";
+                builder.SetTrigger(new SystemTrigger(SystemTriggerType.InternetAvailable, false));
+
+                myTask = builder.Register();
+                myTask.Completed += OnBackGroundTaskCompleted;
+            }
+        }
+
+        private void OnBackGroundTaskCompleted(IBackgroundTaskRegistration task, BackgroundTaskCompletedEventArgs args)
+        {
+            Debug.WriteLine("refreshing the screen");
+            Dispatcher.RunAsync(CoreDispatcherPriority.High, RefreshScreen);
         }
 
         private void CommandsRequested(SettingsPane sender, SettingsPaneCommandsRequestedEventArgs args)
@@ -58,19 +88,12 @@ namespace PasswordManager
 
         void Current_Resuming(object sender, object e)
         {
-            this.SyncPassword(null);
             this.RefreshScreen();
         }
 
         private void CurrentOnSuspending(object sender, SuspendingEventArgs suspendingEventArgs)
         {
             // TODO : This is the time to save app data in case the process is terminated.
-        }
-
-        public void SyncPassword(object state)
-        {
-            Debug.WriteLine("I'm going to try to sync");
-            Storage.sync();
         }
 
         /// <summary>
@@ -83,7 +106,8 @@ namespace PasswordManager
             this.AddPassword.Visibility = Visibility.Visible;
             this.TitleTextBox.Focus(FocusState.Keyboard);
 
-            this.BottomAppBar.IsOpen = false;
+            var bottomAppBar = this.BottomAppBar;
+            if (bottomAppBar != null) bottomAppBar.IsOpen = false;
         }
 
         /// <summary>

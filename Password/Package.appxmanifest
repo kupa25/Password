@@ -18,6 +18,16 @@
       <m2:VisualElements DisplayName="PasswordPal" Square150x150Logo="Assets\Logo_150.png" Square30x30Logo="Assets\Square30x30Logo.png" Description="Password" ForegroundText="light" BackgroundColor="#464646">
         <m2:SplashScreen Image="Assets\SplashScreen.png" />
       </m2:VisualElements>
+      <Extensions>
+        <Extension Category="windows.backgroundTasks" EntryPoint="PasswordManager.Background.BackgroundTask">
+          <BackgroundTasks>
+            <Task Type="systemEvent" />
+          </BackgroundTasks>
+        </Extension>
+      </Extensions>
     </Application>
   </Applications>
+  <Capabilities>
+    <Capability Name="internetClient" />
+  </Capabilities>
 </Package>
