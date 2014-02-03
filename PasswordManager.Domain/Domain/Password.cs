@@ -2,12 +2,18 @@
 
 namespace PasswordManager.Helper.Domain
 {
+    using Windows.Foundation.Metadata;
+
     public class Password : IComparable
     {
         public string Title { get; set; }
         public string UserName { get; set; }
         public string PasswordText { get; set; }
-        public Guid KeyGuid { get; set; }
+        
+        [Deprecated("used in Version 1 of the app", DeprecationType.Deprecate, 1)]
+        public Guid? KeyGuid { get; set; }
+
+        public string Key { get; set; }
         public string AlphaIcon
         {
             get

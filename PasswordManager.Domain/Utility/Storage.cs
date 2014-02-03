@@ -7,11 +7,11 @@ using PasswordManager.Helper.Domain;
 
 namespace PasswordManager.Helper.Utility
 {
+    using System.Linq;
+
     public class Storage
     {
-        /// <summary>
-        /// The settings.
-        /// </summary>
+        
         private static ApplicationDataContainer cloudStorage = ApplicationData.Current.RoamingSettings;
         private static ApplicationDataContainer localStorage = ApplicationData.Current.LocalSettings;
 
@@ -33,7 +33,7 @@ namespace PasswordManager.Helper.Utility
                         }
                     }
                 }
-
+                
                 return passwordList;
             }
             set { passwordList = value; }
@@ -52,17 +52,16 @@ namespace PasswordManager.Helper.Utility
 
             foreach (KeyValuePair<string, object> pair in storage.Values)
             {
-                Password deserializedObj;
                 try
                 {
-                    deserializedObj = JsonConvert.DeserializeObject<Password>(pair.Value.ToString());
+                    passwords.Add(JsonConvert.DeserializeObject<Password>(pair.Value.ToString()));
                 }
                 catch (Exception)
                 {
-                    deserializedObj = new Password { Title = pair.Key, UserName = pair.Value.ToString() };
+                    //deserializedObj = new Password { Title = pair.Key, UserName = pair.Value.ToString() };
                 }
 
-                passwords.Add(deserializedObj);
+                
             }
 
             return passwords;
@@ -77,20 +76,20 @@ namespace PasswordManager.Helper.Utility
                 // sync from up from cache to cloud
                 foreach (Password pwd in cachedPasswordList)
                 {
-                    if (!cloudStorage.Values.Contains(new KeyValuePair<string, object>(pwd.KeyGuid.ToString(), JsonConvert.SerializeObject(pwd))))
+                    if (!cloudStorage.Values.ContainsKey(pwd.Key))
                     {
                         Debug.WriteLine("SYNC UP: "+ pwd);
-                        cloudStorage.Values.Add(pwd.KeyGuid.ToString(), JsonConvert.SerializeObject(pwd));
+                        cloudStorage.Values.Add(pwd.Key, JsonConvert.SerializeObject(pwd));
                     }
                 }
 
                 // Sync stuff down from cloud to local
                 foreach (Password pwd in GetPassword(cloudStorage))
                 {
-                    if (!localStorage.Values.Contains(new KeyValuePair<string, object>(pwd.KeyGuid.ToString(), JsonConvert.SerializeObject(pwd))))
+                    if (!localStorage.Values.ContainsKey(pwd.Key))
                     {
                         Debug.WriteLine("SYNC Down: " + pwd);
-                        localStorage.Values.Add(pwd.KeyGuid.ToString(), JsonConvert.SerializeObject(pwd));
+                        localStorage.Values.Add(pwd.Key, JsonConvert.SerializeObject(pwd));
                     }
                 }
 
@@ -104,11 +103,11 @@ namespace PasswordManager.Helper.Utility
             if(pwd != null)
             {
                 cachedPasswordList.Add(pwd);
-                localStorage.Values.Add(pwd.KeyGuid.ToString(), JsonConvert.SerializeObject(pwd));
+                localStorage.Values.Add(pwd.Key, JsonConvert.SerializeObject(pwd));
 
                 if (Helper.IsInternet)
                 {
-                    cloudStorage.Values.Add(pwd.KeyGuid.ToString(), JsonConvert.SerializeObject(pwd));
+                    cloudStorage.Values.Add(pwd.Key, JsonConvert.SerializeObject(pwd));
                 }
             }
         }
@@ -131,9 +130,81 @@ namespace PasswordManager.Helper.Utility
 
         public static void RemovePasswordList()
         {
-            cachedPasswordList.Clear();
+            cachedPasswordList = null;
             localStorage.Values.Clear();
             cloudStorage.Values.Clear();
+        }
+
+        public static void Convert()
+        {
+            List<Password> passwords = new List<Password>();
+
+            object converted;
+            localStorage.Values.TryGetValue("converted", out converted);
+
+            if (converted != null && (bool)converted)
+            {
+                return;
+            }
+
+            foreach (KeyValuePair<string, object> pair in localStorage.Values)
+            {
+                Guid result;
+                Guid.TryParse(pair.Key, out result);
+
+                if (result != Guid.Empty)
+                {
+                    try
+                    {
+                        var password = JsonConvert.DeserializeObject<Password>(pair.Value.ToString());
+                        password.Key = password.Title;
+                        password.KeyGuid = null;
+                        passwords.Add(password);
+                    }
+                    catch (Exception)
+                    {
+                        // Ignore the bad ones, because it could be something else.
+                    }
+                }
+            }
+
+            foreach (KeyValuePair<string, object> pair in cloudStorage.Values)
+            {
+                Guid result;
+                Guid.TryParse(pair.Key, out result);
+
+                if (result != Guid.Empty)
+                {
+                    try
+                    {
+                        var password = JsonConvert.DeserializeObject<Password>(pair.Value.ToString());
+                        password.Key = password.Title;
+                        password.KeyGuid = null;
+
+                        if (!passwords.Exists(pass => pass.Key == password.Key))
+                        {
+                            passwords.Add(password);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        // Ignore the bad ones, because it could be something else.
+                    }
+                }
+            }
+
+            RemovePasswordList();
+
+            var counter = 0;
+            foreach (var password in passwords)
+            {
+                Debug.WriteLine("counter : " + counter++);
+
+                localStorage.Values.Add(new KeyValuePair<string, object>(password.Key, JsonConvert.SerializeObject(password)));
+                cloudStorage.Values.Add(new KeyValuePair<string, object>(password.Key, JsonConvert.SerializeObject(password)));
+            }
+
+            localStorage.Values.Add("converted", true);
         }
     }
 }

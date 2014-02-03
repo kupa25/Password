@@ -36,11 +36,7 @@ namespace PasswordManager
 
             this.InitializeComponent();
             this.AddPassword.Visibility = Visibility.Collapsed;
-
-            Storage.sync();
-
-            this.RefreshScreen();
-
+            
             var taskRegistered = false;
             var exampleTaskName = "BackgroundTask";
 
@@ -68,6 +64,13 @@ namespace PasswordManager
                 myTask = builder.Register();
                 myTask.Completed += OnBackGroundTaskCompleted;
             }
+
+            //Convert old version 1 storage
+            Storage.Convert();
+
+            Storage.sync();
+
+            this.RefreshScreen();
         }
 
         private void OnBackGroundTaskCompleted(IBackgroundTaskRegistration task, BackgroundTaskCompletedEventArgs args)
@@ -131,9 +134,9 @@ namespace PasswordManager
         {
             var passwordToBeSaved = new Password
             {
-                KeyGuid = Guid.NewGuid(),
                 UserName = this.UserNameTextBox.Text,
                 Title = this.TitleTextBox.Text,
+                Key = this.TitleTextBox.Text,
                 PasswordText = this.PasswordTextBox.Password
             };
 
