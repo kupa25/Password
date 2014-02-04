@@ -107,7 +107,7 @@ namespace PasswordManager.Helper.Utility
 
                 if (Helper.IsInternet)
                 {
-                    cloudStorage.Values.Add(pwd.Key, JsonConvert.SerializeObject(pwd));
+                    cloudStorage.Values.Add(pwd.KeyGuid.ToString(), JsonConvert.SerializeObject(pwd));
                 }
             }
         }
@@ -139,13 +139,13 @@ namespace PasswordManager.Helper.Utility
         {
             List<Password> passwords = new List<Password>();
 
-            object converted;
-            localStorage.Values.TryGetValue("converted", out converted);
+            //object converted;
+            //localStorage.Values.TryGetValue("converted", out converted);
 
-            if (converted != null && (bool)converted)
-            {
-                return;
-            }
+            //if (converted != null && (bool)converted)
+            //{
+            //    return;
+            //}
 
             foreach (KeyValuePair<string, object> pair in localStorage.Values)
             {
@@ -160,6 +160,8 @@ namespace PasswordManager.Helper.Utility
                         password.Key = password.Title;
                         password.KeyGuid = null;
                         passwords.Add(password);
+
+                        localStorage.Values.Remove(pair);
                     }
                     catch (Exception)
                     {
@@ -184,6 +186,7 @@ namespace PasswordManager.Helper.Utility
                         if (!passwords.Exists(pass => pass.Key == password.Key))
                         {
                             passwords.Add(password);
+                            cloudStorage.Values.Remove(pair);
                         }
                     }
                     catch (Exception)
@@ -193,18 +196,18 @@ namespace PasswordManager.Helper.Utility
                 }
             }
 
-            RemovePasswordList();
-
             var counter = 0;
             foreach (var password in passwords)
             {
-                Debug.WriteLine("counter : " + counter++);
+                counter++;
 
                 localStorage.Values.Add(new KeyValuePair<string, object>(password.Key, JsonConvert.SerializeObject(password)));
                 cloudStorage.Values.Add(new KeyValuePair<string, object>(password.Key, JsonConvert.SerializeObject(password)));
             }
 
-            localStorage.Values.Add("converted", true);
+            Debug.WriteLine("Fixed " + counter + " passwords to both storage");
+
+            //localStorage.Values.Add("converted", true);
         }
     }
 }
