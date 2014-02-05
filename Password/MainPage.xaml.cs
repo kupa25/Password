@@ -91,6 +91,7 @@ namespace PasswordManager
 
         void Current_Resuming(object sender, object e)
         {
+            Storage.sync();
             this.RefreshScreen();
         }
 
