@@ -107,7 +107,7 @@ namespace PasswordManager.Helper.Utility
 
                 if (Helper.IsInternet)
                 {
-                    cloudStorage.Values.Add(pwd.KeyGuid.ToString(), JsonConvert.SerializeObject(pwd));
+                    cloudStorage.Values.Add(pwd.Key, JsonConvert.SerializeObject(pwd));
                 }
             }
         }
