@@ -67,10 +67,15 @@ namespace PasswordManager
 
             //Convert old version 1 storage
             Storage.Convert();
-
             Storage.sync();
-
             this.RefreshScreen();
+            CallRatingNotifier();
+        }
+
+        private static void CallRatingNotifier()
+        {
+            RatingNotifier.TriggerNotificationAsyncTask("Please Rate", "Would love to get rating from you",
+                "Rate the App", "No, Thanks", "May be later", 5, 15);
         }
 
         private void OnBackGroundTaskCompleted(IBackgroundTaskRegistration task, BackgroundTaskCompletedEventArgs args)
@@ -89,10 +94,11 @@ namespace PasswordManager
             await Launcher.LaunchUriAsync(new Uri("http://kshitijwebspace.azurewebsites.net/Help"));
         }
 
-        void Current_Resuming(object sender, object e)
+        async void Current_Resuming(object sender, object e)
         {
             Storage.sync();
             this.RefreshScreen();
+            CallRatingNotifier();
         }
 
         private void CurrentOnSuspending(object sender, SuspendingEventArgs suspendingEventArgs)
