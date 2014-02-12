@@ -98,18 +98,31 @@ namespace PasswordManager.Helper.Utility
             }
         }
 
-        public static void AddPassword(Password pwd)
+        public static Results AddPassword(Password pwd)
         {
+            Results results = null;
             if(pwd != null)
             {
-                cachedPasswordList.Add(pwd);
-                localStorage.Values.Add(pwd.Key, JsonConvert.SerializeObject(pwd));
-
-                if (Helper.IsInternet)
+                try
                 {
-                    cloudStorage.Values.Add(pwd.Key, JsonConvert.SerializeObject(pwd));
+                    // Have a rollback mechanism so that if any of the storage fails then we rollback.
+
+                    localStorage.Values.Add(pwd.Key, JsonConvert.SerializeObject(pwd));
+
+                    if (Helper.IsInternet)
+                    {
+                        cloudStorage.Values.Add(pwd.Key, JsonConvert.SerializeObject(pwd));
+                    }
+
+                    cachedPasswordList.Add(pwd);
+                }
+                catch(Exception exception)
+                {
+                    results = new Results{Message = "Error Adding the password: "+ exception.Message, ResultsType = ResultsType.Error};
                 }
             }
+
+            return results ?? new Results {Message = null, ResultsType = ResultsType.Success};
         }
 
         public static void DeletePassword(Password pwd)

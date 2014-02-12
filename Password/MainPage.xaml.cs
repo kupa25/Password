@@ -147,7 +147,14 @@ namespace PasswordManager
                 PasswordText = this.PasswordTextBox.Password
             };
 
-            Storage.AddPassword(passwordToBeSaved);
+            Results addPasswordResults = Storage.AddPassword(passwordToBeSaved);
+
+            if (addPasswordResults.ResultsType == ResultsType.Error)
+            {
+                MessageDialog messagebox = new MessageDialog(addPasswordResults.Message, "Cannot add the Password");
+                messagebox.ShowAsync();
+            }
+            Debug.WriteLine(addPasswordResults.Message);
 
             this.TitleTextBox.Text = this.UserNameTextBox.Text = this.PasswordTextBox.Password = string.Empty;
             this.AddPassword.Visibility = Visibility.Collapsed;
