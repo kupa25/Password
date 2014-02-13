@@ -56,7 +56,7 @@
         <CommandBar>
             <AppBarButton Label="Add Password" Icon="Add" Click="ShowAddPasswordModal" />
             <AppBarSeparator></AppBarSeparator>
-            <AppBarButton Label="Clear Password List" Icon="Delete" Click="RemovePasswordList" />
+            <AppBarButton Label="Clear Password List" Icon="Delete" Click="ClearPasswordClick" />
         </CommandBar>
     </Page.BottomAppBar>
 </Page>
