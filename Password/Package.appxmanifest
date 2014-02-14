@@ -16,7 +16,7 @@
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Password.App">
       <m2:VisualElements DisplayName="PasswordPal" Square150x150Logo="Assets\Logo_150.png" Square30x30Logo="Assets\Square30x30Logo.png" Description="Password" ForegroundText="light" BackgroundColor="#464646">
-        <m2:SplashScreen Image="Assets\SplashScreen.png" />
+        <m2:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#545353" />
       </m2:VisualElements>
       <Extensions>
         <Extension Category="windows.backgroundTasks" EntryPoint="PasswordManager.Background.BackgroundTask">
