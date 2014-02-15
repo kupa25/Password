@@ -72,17 +72,7 @@ namespace PasswordManager
             CallRatingNotifier();
         }
 
-        private static void CallRatingNotifier()
-        {
-            RatingNotifier.TriggerNotificationAsyncTask("Please Rate", "Would love to get rating from you",
-                "Rate the App", "No, Thanks", "May be later", 5, 15);
-        }
-
-        private void OnBackGroundTaskCompleted(IBackgroundTaskRegistration task, BackgroundTaskCompletedEventArgs args)
-        {
-            Debug.WriteLine("refreshing the screen");
-            Dispatcher.RunAsync(CoreDispatcherPriority.High, RefreshScreen);
-        }
+        #region Privacy Policy
 
         private void CommandsRequested(SettingsPane sender, SettingsPaneCommandsRequestedEventArgs args)
         {
@@ -94,6 +84,10 @@ namespace PasswordManager
             await Launcher.LaunchUriAsync(new Uri("http://kshitijwebspace.azurewebsites.net/Help"));
         }
 
+        #endregion
+
+        #region Resume and Suspending
+
         async void Current_Resuming(object sender, object e)
         {
             Storage.sync();
@@ -104,6 +98,20 @@ namespace PasswordManager
         private void CurrentOnSuspending(object sender, SuspendingEventArgs suspendingEventArgs)
         {
             // TODO : This is the time to save app data in case the process is terminated.
+        }
+
+        #endregion
+
+        private static void CallRatingNotifier()
+        {
+            RatingNotifier.TriggerNotificationAsyncTask("Please Rate", "Would love to get rating from you",
+                "Rate the App", "No, Thanks", "May be later", 5, 15);
+        }
+
+        private void OnBackGroundTaskCompleted(IBackgroundTaskRegistration task, BackgroundTaskCompletedEventArgs args)
+        {
+            Debug.WriteLine("refreshing the screen");
+            Dispatcher.RunAsync(CoreDispatcherPriority.High, RefreshScreen);
         }
 
         /// <summary>
@@ -153,13 +161,15 @@ namespace PasswordManager
             {
                 MessageDialog messagebox = new MessageDialog(addPasswordResults.Message, "Cannot add the Password");
                 messagebox.ShowAsync();
+                Debug.WriteLine(addPasswordResults.Message);
             }
-            Debug.WriteLine(addPasswordResults.Message);
+            else
+            {
+                this.TitleTextBox.Text = this.UserNameTextBox.Text = this.PasswordTextBox.Password = string.Empty;
+                this.AddPassword.Visibility = Visibility.Collapsed;
 
-            this.TitleTextBox.Text = this.UserNameTextBox.Text = this.PasswordTextBox.Password = string.Empty;
-            this.AddPassword.Visibility = Visibility.Collapsed;
-
-            this.RefreshScreen();
+                this.RefreshScreen();
+            }
         }
 
         /// <summary>
@@ -201,10 +211,10 @@ namespace PasswordManager
             this.RefreshScreen();
         }
 
-        private async void RemovePasswordList(object sender, RoutedEventArgs e)
+        private async void ClearPasswordClick(object sender, RoutedEventArgs e)
         {
             MessageDialog confirm = new MessageDialog("This will remove your entire password.  Are you sure?");
-            confirm.Commands.Add(new UICommand("OK", this.RemovePasswordList));
+            confirm.Commands.Add(new UICommand("OK", this.ClearPassword));
             confirm.Commands.Add(new UICommand("Cancel"));
             confirm.DefaultCommandIndex = 0;
             confirm.CancelCommandIndex = 1;
@@ -212,10 +222,9 @@ namespace PasswordManager
             await confirm.ShowAsync();
         }
 
-        private void RemovePasswordList(IUICommand command)
+        private void ClearPassword(IUICommand command)
         {
             Storage.RemovePasswordList();
-
             this.RefreshScreen();
         }
 

@@ -7,11 +7,8 @@ using PasswordManager.Helper.Domain;
 
 namespace PasswordManager.Helper.Utility
 {
-    using System.Linq;
-
     public class Storage
     {
-        
         private static ApplicationDataContainer cloudStorage = ApplicationData.Current.RoamingSettings;
         private static ApplicationDataContainer localStorage = ApplicationData.Current.LocalSettings;
 
@@ -36,7 +33,10 @@ namespace PasswordManager.Helper.Utility
                 
                 return passwordList;
             }
-            set { passwordList = value; }
+            set
+            {
+                passwordList = value;
+            }
         }
 
         public static List<Password> RetreivePassword()
@@ -57,11 +57,7 @@ namespace PasswordManager.Helper.Utility
                     passwords.Add(JsonConvert.DeserializeObject<Password>(pair.Value.ToString()));
                 }
                 catch (Exception)
-                {
-                    //deserializedObj = new Password { Title = pair.Key, UserName = pair.Value.ToString() };
-                }
-
-                
+                { }
             }
 
             return passwords;
@@ -79,7 +75,7 @@ namespace PasswordManager.Helper.Utility
                     if (!cloudStorage.Values.ContainsKey(pwd.Key))
                     {
                         Debug.WriteLine("SYNC UP: "+ pwd);
-                        cloudStorage.Values.Add(pwd.Key, JsonConvert.SerializeObject(pwd));
+                        cloudStorage.Values.Add(CreateKeyValuePair(pwd));
                     }
                 }
 
@@ -89,7 +85,7 @@ namespace PasswordManager.Helper.Utility
                     if (!localStorage.Values.ContainsKey(pwd.Key))
                     {
                         Debug.WriteLine("SYNC Down: " + pwd);
-                        localStorage.Values.Add(pwd.Key, JsonConvert.SerializeObject(pwd));
+                        localStorage.Values.Add(CreateKeyValuePair(pwd));
                     }
                 }
 
@@ -107,11 +103,11 @@ namespace PasswordManager.Helper.Utility
                 {
                     // Have a rollback mechanism so that if any of the storage fails then we rollback.
 
-                    localStorage.Values.Add(pwd.Key, JsonConvert.SerializeObject(pwd));
+                    localStorage.Values.Add(CreateKeyValuePair(pwd));
 
                     if (Helper.IsInternet)
                     {
-                        cloudStorage.Values.Add(pwd.Key, JsonConvert.SerializeObject(pwd));
+                        cloudStorage.Values.Add(CreateKeyValuePair(pwd));
                     }
 
                     cachedPasswordList.Add(pwd);
@@ -213,14 +209,20 @@ namespace PasswordManager.Helper.Utility
             foreach (var password in passwords)
             {
                 counter++;
+                var keyValuePair = CreateKeyValuePair(password);
 
-                localStorage.Values.Add(new KeyValuePair<string, object>(password.Key, JsonConvert.SerializeObject(password)));
-                cloudStorage.Values.Add(new KeyValuePair<string, object>(password.Key, JsonConvert.SerializeObject(password)));
+                localStorage.Values.Add(keyValuePair);
+                cloudStorage.Values.Add(keyValuePair);
             }
 
             Debug.WriteLine("Fixed " + counter + " passwords to both storage");
 
             //localStorage.Values.Add("converted", true);
+        }
+
+        private static KeyValuePair<string, object> CreateKeyValuePair(Password password)
+        {
+            return new KeyValuePair<string, object>(password.Key, JsonConvert.SerializeObject(password));
         }
     }
 }
