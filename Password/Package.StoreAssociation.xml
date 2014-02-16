@@ -355,5 +355,11 @@
     </ReservedNames>
   </ProductReservedInfo>
   <AccountPackageIdentityNames />
-  <PackageInfoList LandingUrl="https://appdev.microsoft.com:443/StorePortals/Developer/Catalog/ReleaseAnchor/45b9395f-0faf-4731-9c90-3f531d436b20" />
+  <PackageInfoList LandingUrl="https://appdev.microsoft.com:443/StorePortals/Developer/Catalog/ReleaseAnchor/45b9395f-0faf-4731-9c90-3f531d436b20">
+    <PackageInfo>
+      <OsMinVersion>6.3.0.0</OsMinVersion>
+      <PackageArchitecture>neutral</PackageArchitecture>
+      <PackageMaxArchitectureVersion>2.0.0.10</PackageMaxArchitectureVersion>
+    </PackageInfo>
+  </PackageInfoList>
 </StoreAssociation>
