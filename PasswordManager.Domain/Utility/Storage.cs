@@ -129,7 +129,7 @@ namespace PasswordManager.Helper.Utility
 
                 cachedPasswordList.Remove(pwd);
 
-                localStorage.Values.Remove(pwd.KeyGuid.ToString());
+                localStorage.Values.Remove(CreateKeyValuePair(pwd));
             }
             else
             {
