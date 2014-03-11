@@ -6,6 +6,7 @@ using System.Windows.Markup;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using Microsoft.WindowsAzure.MobileServices;
 using PasswordManager.WindowsPhone.Resources;
 
 namespace PasswordManager.WindowsPhone
@@ -17,6 +18,11 @@ namespace PasswordManager.WindowsPhone
         /// </summary>
         /// <returns>The root frame of the Phone Application.</returns>
         public static PhoneApplicationFrame RootFrame { get; private set; }
+
+        public static MobileServiceClient MobileService = new MobileServiceClient(
+            "https://passwordmanager.azure-mobile.net/",
+            "HEIxWyJOZKjpNJCTQcHUeKzZTdAydf63"
+            );
 
         /// <summary>
         /// Constructor for the Application object.

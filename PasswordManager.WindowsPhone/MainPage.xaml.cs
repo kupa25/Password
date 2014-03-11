@@ -1,49 +1,44 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Navigation;
+﻿using System.Threading.Tasks;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
+using Microsoft.WindowsAzure.MobileServices;
 using PasswordManager.Library;
-using PasswordManager.WindowsPhone.Resources;
+
 
 namespace PasswordManager.WindowsPhone
 {
     public partial class MainPage : PhoneApplicationPage
     {
+        private IMobileServiceTable<AppUser> AppUserTable = App.MobileService.GetTable<AppUser>(); 
+
         // Constructor
         public MainPage()
         {
             InitializeComponent();
 
-            IList<Password> tempList = new List<Password>();
+            //IList<Password> tempList = new List<Password>();
 
-            tempList.Add(new Password{ Title = "Kshitij", UserName = "Kupa", PasswordText = "test"});
+            //tempList.Add(new Password{ Title = "Kshitij", UserName = "Kupa", PasswordText = "test"});
 
-            ListSelector.ItemsSource = (IList) tempList;
+            LoadFromMobileService();
+
+            //ListSelector.ItemsSource = (IList) tempList;
 
             // Sample code to localize the ApplicationBar
             //BuildLocalizedApplicationBar();
         }
 
-        // Sample code for building a localized ApplicationBar
-        //private void BuildLocalizedApplicationBar()
-        //{
-        //    // Set the page's ApplicationBar to a new instance of ApplicationBar.
-        //    ApplicationBar = new ApplicationBar();
+        private async Task LoadFromMobileService()
+        {
+            var phoneUser = new AppUser
+            {
+                DeviceId = "test2",
+                Id = "test2",
+                SerializedPassword = "test2"
+            };
 
-        //    // Create a new button and set the text value to the localized string from AppResources.
-        //    ApplicationBarIconButton appBarButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/appbar.add.rest.png", UriKind.Relative));
-        //    appBarButton.Text = AppResources.AppBarButtonText;
-        //    ApplicationBar.Buttons.Add(appBarButton);
+            await AppUserTable.InsertAsync(phoneUser);
 
-        //    // Create a new menu item with the localized string from AppResources.
-        //    ApplicationBarMenuItem appBarMenuItem = new ApplicationBarMenuItem(AppResources.AppBarMenuItemText);
-        //    ApplicationBar.MenuItems.Add(appBarMenuItem);
-        //}
+            return;
+        }
     }
 }
