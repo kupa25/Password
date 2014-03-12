@@ -17,39 +17,44 @@
                     <TextBlock Text="{Binding AlphaIcon}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </Border>
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center" >
-                    <TextBlock Text="{Binding Title}" Margin="10,0,0,0" Width="170" Height="20" TextTrimming="WordEllipsis" />
+                    <TextBlock Text="{Binding Title}" Margin="10,0,0,0" Width="170" Height="20" TextTrimming="WordEllipsis" Tapped="PasswordTapped" />
                 </StackPanel>
             </StackPanel>
         </DataTemplate>
     </Page.Resources>
 
-    <Grid Name="MyCustomGridView" Background="White" Tapped="MyCustomGridView_Tapped">
+    <Grid Name="MyCustomGridView" Background="White">
         <TextBlock HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" Text="Password Manager" VerticalAlignment="Top" FontSize="48"/>
         <GridView x:Name="PasswordView"
                     ItemTemplate="{StaticResource PasswordDisplayTemplate}"
                     ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
                     Tapped="PasswordViewTapped" Margin="0,120,0,0"
-                    />
-
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Name="AddPassword" Background="#FF933131">
-            <StackPanel.ChildrenTransitions>
-                <TransitionCollection>
-                    <EdgeUIThemeTransition/>
-                </TransitionCollection>
-            </StackPanel.ChildrenTransitions>
-            <TextBlock FontSize="70" FontWeight="Bold" Foreground="White">Add Password</TextBlock>
-            <TextBox PlaceholderText="Title" Name="TitleTextBox" FontSize="30"></TextBox>
-            <TextBox PlaceholderText="UserName" Name="UserNameTextBox" FontSize="30"></TextBox>
-            <PasswordBox PlaceholderText="Password" Name="PasswordTextBox" FontSize="30" KeyUp="PasswordTextBox_KeyUp"></PasswordBox>
-            <Button FontSize="30" Click="AddPasswordClick" BorderBrush="{x:Null}" Foreground="#FF250D0D">
-                <Button.Background>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FF4E7E09" Offset="0"/>
-                        <GradientStop Color="#FFADFF37" Offset="1"/>
-                    </LinearGradientBrush>
-                </Button.Background> Add Password
-            </Button>
+                    />        
+            <StackPanel  HorizontalAlignment="Center" VerticalAlignment="Center" Name="AddPassword" Background="White" Width="300" RequestedTheme="Light">
+            <Border BorderBrush="#FFF1BE34" BorderThickness="10" CornerRadius="5" Background="#FF6E6969" RequestedTheme="Dark">
+                <StackPanel>
+                    <StackPanel.ChildrenTransitions>
+                        <TransitionCollection>
+                            <EdgeUIThemeTransition/>
+                        </TransitionCollection>
+                    </StackPanel.ChildrenTransitions>
+                    <Border Name="TitleBorder" BorderBrush="Red">
+                        <TextBox PlaceholderText="Title" Name="TitleTextBox" FontSize="20" BorderBrush="#FF746F6F"></TextBox>
+                    </Border>
+                    <TextBox PlaceholderText="User Name" Name="UserNameTextBox" BorderBrush="#FF746F6F" FontSize="20" BorderThickness="2,0,2,2" ></TextBox>
+                    <PasswordBox PlaceholderText="Password" Name="PasswordTextBox" FontSize="20" BorderBrush="#FF746F6F" KeyUp="PasswordTextBox_KeyUp" BorderThickness="2,0,2,2"></PasswordBox>
+                    <Button FontSize="15" Click="AddPasswordClick" BorderBrush="{x:Null}" Foreground="#FF250D0D" RequestedTheme="Light">
+                        <Button.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFF1C44B" Offset="0"/>
+                                <GradientStop Color="#FFB98A08" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Button.Background> Add Password
+                    </Button>
+            </StackPanel>
+            </Border>
         </StackPanel>
+        
     </Grid>
 
     <Page.BottomAppBar>

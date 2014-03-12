@@ -9,6 +9,7 @@
 
 using Windows.ApplicationModel.Background;
 using Windows.UI.Core;
+using Windows.UI.Xaml.Input;
 using PasswordManager.Helper.Domain;
 using PasswordManager.Helper.Utility;
 
@@ -147,6 +148,14 @@ namespace PasswordManager
         /// <param name="e"> The e. </param>
         private void AddPasswordClick(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(UserNameTextBox.Text))
+            {
+                TitleBorder.BorderThickness = new Thickness(4);
+                return;
+            }
+
+            TitleBorder.BorderThickness = new Thickness(0);
+
             var passwordToBeSaved = new Password
             {
                 UserName = this.UserNameTextBox.Text,
@@ -179,25 +188,7 @@ namespace PasswordManager
         /// <param name="e"> The e. </param>
         private async void PasswordViewTapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            var selectedItem = (Password)((GridView)sender).SelectedItem;
-
-            if (selectedItem != null)
-            {
-                string message = "UserName: " + selectedItem.UserName + "\n" + "Password: " + selectedItem.PasswordText;
-
-                var msg = new MessageDialog(message ?? "Please delete this and recreate");
-
-                // Create the button manually so that we can associate default action and cancel button action
-                msg.Commands.Add(new UICommand("Delete", this.DeletePassword));
-                msg.Commands.Add(new UICommand("Close", null));
-                msg.DefaultCommandIndex = msg.CancelCommandIndex = 1;
-
-                await msg.ShowAsync();
-            }
-            else
-            {
-                Debug.WriteLine("selected item was null");
-            }
+            this.AddPassword.Visibility = Visibility.Collapsed;
         }
 
         private void DeletePassword(IUICommand command)
@@ -228,17 +219,37 @@ namespace PasswordManager
             this.RefreshScreen();
         }
 
-        private void MyCustomGridView_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
-        {
-            this.AddPassword.Visibility = Visibility.Collapsed;
-        }
-
         private void PasswordTextBox_KeyUp(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
             if(e.Key == VirtualKey.Enter)
             {
                 this.AddPasswordClick(sender, null);
             }
+        }
+
+        private async void PasswordTapped(object sender, TappedRoutedEventArgs e)
+        {
+            var selectedItem = (Password)PasswordView.SelectedItem;
+
+            if (selectedItem != null)
+            {
+                string message = "UserName: " + selectedItem.UserName + "\n" + "Password: " + selectedItem.PasswordText;
+
+                var msg = new MessageDialog(message ?? "Please delete this and recreate");
+
+                // Create the button manually so that we can associate default action and cancel button action
+                msg.Commands.Add(new UICommand("Delete", this.DeletePassword));
+                msg.Commands.Add(new UICommand("Close", null));
+                msg.DefaultCommandIndex = msg.CancelCommandIndex = 1;
+
+                await msg.ShowAsync();
+            }
+            else
+            {
+                Debug.WriteLine("selected item was null");
+            }
+
+            this.AddPassword.Visibility = Visibility.Collapsed;
         }
     }
 }
