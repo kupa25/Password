@@ -36,7 +36,7 @@ namespace PasswordManager
             SettingsPane.GetForCurrentView().CommandsRequested += this.CommandsRequested;
 
             this.InitializeComponent();
-            this.AddPassword.Visibility = Visibility.Collapsed;
+            this.PasswordModal.Visibility = Visibility.Collapsed;
             
             var taskRegistered = false;
             var exampleTaskName = "BackgroundTask";
@@ -116,14 +116,41 @@ namespace PasswordManager
         }
 
         /// <summary>
-        /// Show Add password modal.
+        /// Show Password modal.
         /// </summary>
         /// <param name="sender"> The sender. </param>
         /// <param name="e"> The e. </param>
-        private void ShowAddPasswordModal(object sender, RoutedEventArgs e)
+        private void ShowPasswordModal(object sender, RoutedEventArgs e)
         {
-            this.AddPassword.Visibility = Visibility.Visible;
-            this.TitleTextBox.Focus(FocusState.Keyboard);
+            ShowPasswordModal(null);
+        }
+
+        private void ShowPasswordModal(Password selectedPassword)
+        {
+            if (selectedPassword != null)
+            {
+                //Display the password
+                TitleBlock.Text = "Title: " + selectedPassword.Title;
+                UserNameBlock.Text = "UserName: " + selectedPassword.UserName;
+                PasswordBlock.Text = "Password: " + selectedPassword.PasswordText;
+
+                //TitleTextBox.Text = selectedPassword.Title;
+                //UserNameTextBox.Text = selectedPassword.UserName;
+                //PasswordTextBox.Password = selectedPassword.PasswordText;
+
+                TitleBlock.Visibility = UserNameBlock.Visibility = PasswordBlock.Visibility = Visibility.Visible;
+                TitleTextBox.Visibility = UserNameTextBox.Visibility = PasswordTextBox.Visibility = Visibility.Collapsed;
+                //TitleTextBox.IsEnabled = UserNameTextBox.IsEnabled = PasswordTextBox.IsEnabled = false;
+
+            }
+            else
+            {
+                TitleBlock.Visibility = UserNameBlock.Visibility = PasswordBlock.Visibility = Visibility.Collapsed;
+                TitleTextBox.Visibility = UserNameTextBox.Visibility = PasswordTextBox.Visibility = Visibility.Visible;
+                this.TitleTextBox.Focus(FocusState.Keyboard);
+            }
+
+            this.PasswordModal.Visibility = Visibility.Visible;
 
             var bottomAppBar = this.BottomAppBar;
             if (bottomAppBar != null) bottomAppBar.IsOpen = false;
@@ -175,7 +202,7 @@ namespace PasswordManager
             else
             {
                 this.TitleTextBox.Text = this.UserNameTextBox.Text = this.PasswordTextBox.Password = string.Empty;
-                this.AddPassword.Visibility = Visibility.Collapsed;
+                this.PasswordModal.Visibility = Visibility.Collapsed;
 
                 this.RefreshScreen();
             }
@@ -186,9 +213,12 @@ namespace PasswordManager
         /// </summary>
         /// <param name="sender"> The sender. </param>
         /// <param name="e"> The e. </param>
-        private async void PasswordViewTapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        private void PasswordViewTapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            this.AddPassword.Visibility = Visibility.Collapsed;
+            if (e.OriginalSource.GetType() == typeof(Grid))
+            {
+                this.PasswordModal.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void DeletePassword(IUICommand command)
@@ -227,29 +257,11 @@ namespace PasswordManager
             }
         }
 
-        private async void PasswordTapped(object sender, TappedRoutedEventArgs e)
+        private void PasswordTapped(object sender, TappedRoutedEventArgs e)
         {
             var selectedItem = (Password)PasswordView.SelectedItem;
 
-            if (selectedItem != null)
-            {
-                string message = "UserName: " + selectedItem.UserName + "\n" + "Password: " + selectedItem.PasswordText;
-
-                var msg = new MessageDialog(message ?? "Please delete this and recreate");
-
-                // Create the button manually so that we can associate default action and cancel button action
-                msg.Commands.Add(new UICommand("Delete", this.DeletePassword));
-                msg.Commands.Add(new UICommand("Close", null));
-                msg.DefaultCommandIndex = msg.CancelCommandIndex = 1;
-
-                await msg.ShowAsync();
-            }
-            else
-            {
-                Debug.WriteLine("selected item was null");
-            }
-
-            this.AddPassword.Visibility = Visibility.Collapsed;
+            ShowPasswordModal(selectedItem);
         }
     }
 }

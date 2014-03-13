@@ -12,12 +12,12 @@
         <CollectionViewSource x:Name="itemsViewSource" />
 
         <DataTemplate x:Key="PasswordDisplayTemplate">
-            <StackPanel Orientation="Horizontal" Width="220" Height="60">
+            <StackPanel Orientation="Horizontal" Width="220" Height="60" Tapped="PasswordTapped">
                 <Border Background="#66727272" Width="40" Height="40" Margin="10" CornerRadius="50">
                     <TextBlock Text="{Binding AlphaIcon}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </Border>
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center" >
-                    <TextBlock Text="{Binding Title}" Margin="10,0,0,0" Width="170" Height="20" TextTrimming="WordEllipsis" Tapped="PasswordTapped" />
+                    <TextBlock Text="{Binding Title}" Margin="10,0,0,0" Width="170" Height="20" TextTrimming="WordEllipsis"/>
                 </StackPanel>
             </StackPanel>
         </DataTemplate>
@@ -28,9 +28,9 @@
         <GridView x:Name="PasswordView"
                     ItemTemplate="{StaticResource PasswordDisplayTemplate}"
                     ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
-                    Tapped="PasswordViewTapped" Margin="0,120,0,0"
-                    />        
-            <StackPanel  HorizontalAlignment="Center" VerticalAlignment="Center" Name="AddPassword" Background="White" Width="300" RequestedTheme="Light">
+                    Tapped="PasswordViewTapped" Margin="0,120,0,0" />
+        
+            <StackPanel  HorizontalAlignment="Center" VerticalAlignment="Center" Name="PasswordModal" Width="300">
             <Border BorderBrush="#FFF1BE34" BorderThickness="10" CornerRadius="5" Background="#FF6E6969" RequestedTheme="Dark">
                 <StackPanel>
                     <StackPanel.ChildrenTransitions>
@@ -38,11 +38,18 @@
                             <EdgeUIThemeTransition/>
                         </TransitionCollection>
                     </StackPanel.ChildrenTransitions>
+                    
+                    <TextBlock Name="TitleBlock" FontSize="20" Visibility="Collapsed"></TextBlock>
                     <Border Name="TitleBorder" BorderBrush="Red">
                         <TextBox PlaceholderText="Title" Name="TitleTextBox" FontSize="20" BorderBrush="#FF746F6F"></TextBox>
                     </Border>
-                    <TextBox PlaceholderText="User Name" Name="UserNameTextBox" BorderBrush="#FF746F6F" FontSize="20" BorderThickness="2,0,2,2" ></TextBox>
+                    
+                    <TextBlock Name="UserNameBlock" FontSize="20" Visibility="Collapsed"></TextBlock>
+                    <TextBox PlaceholderText="User Name" Name="UserNameTextBox" BorderBrush="#FF746F6F" FontSize="20" BorderThickness="2,0,2,2"/>
+
+                    <TextBlock Name="PasswordBlock" FontSize="20" Visibility="Collapsed"></TextBlock>
                     <PasswordBox PlaceholderText="Password" Name="PasswordTextBox" FontSize="20" BorderBrush="#FF746F6F" KeyUp="PasswordTextBox_KeyUp" BorderThickness="2,0,2,2"></PasswordBox>
+                    
                     <Button FontSize="15" Click="AddPasswordClick" BorderBrush="{x:Null}" Foreground="#FF250D0D" RequestedTheme="Light">
                         <Button.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -59,7 +66,7 @@
 
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton Label="Add Password" Icon="Add" Click="ShowAddPasswordModal" />
+            <AppBarButton Label="Add Password" Icon="Add" Click="ShowPasswordModal" />
             <AppBarSeparator></AppBarSeparator>
             <AppBarButton Label="Clear Password List" Icon="Delete" Click="ClearPasswordClick" />
         </CommandBar>
