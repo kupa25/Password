@@ -115,6 +115,35 @@ namespace PasswordManager
             Dispatcher.RunAsync(CoreDispatcherPriority.High, RefreshScreen);
         }
 
+        #region Action Handlers
+        /// <summary>
+        /// The password view_ tapped.
+        /// </summary>
+        /// <param name="sender"> The sender. </param>
+        /// <param name="e"> The e. </param>
+        private void PasswordViewTapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            if (e.OriginalSource.GetType() == typeof(Grid))
+            {
+                TitleBorder.BorderThickness = new Thickness(0);
+                this.PasswordModal.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void PasswordBox_KeyUp(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.Enter)
+            {
+                this.AddPasswordClick(sender, null);
+            }
+        }
+
+        private void PasswordTapped(object sender, TappedRoutedEventArgs e)
+        {
+            ShowPasswordModal((Password)PasswordView.SelectedItem);
+        }
+        #endregion
+
         /// <summary>
         /// Show Password modal.
         /// </summary>
@@ -130,23 +159,24 @@ namespace PasswordManager
             if (selectedPassword != null)
             {
                 //Display the password
-                TitleBlock.Text = "Title: " + selectedPassword.Title;
-                UserNameBlock.Text = "UserName: " + selectedPassword.UserName;
-                PasswordBlock.Text = "Password: " + selectedPassword.PasswordText;
 
-                //TitleTextBox.Text = selectedPassword.Title;
-                //UserNameTextBox.Text = selectedPassword.UserName;
-                //PasswordTextBox.Password = selectedPassword.PasswordText;
+                TitleTextBox.Text = selectedPassword.Title;
+                UserNameTextBox.Text = selectedPassword.UserName;
+                PasswordTextBox.Text = selectedPassword.PasswordText;
 
-                TitleBlock.Visibility = UserNameBlock.Visibility = PasswordBlock.Visibility = Visibility.Visible;
-                TitleTextBox.Visibility = UserNameTextBox.Visibility = PasswordTextBox.Visibility = Visibility.Collapsed;
-                //TitleTextBox.IsEnabled = UserNameTextBox.IsEnabled = PasswordTextBox.IsEnabled = false;
+                TitleTextBox.IsEnabled = UserNameTextBox.IsEnabled = false;
+                PasswordTextBox.Visibility = Visibility.Visible;
+                PasswordBox.Visibility = Visibility.Collapsed;
 
             }
             else
             {
-                TitleBlock.Visibility = UserNameBlock.Visibility = PasswordBlock.Visibility = Visibility.Collapsed;
-                TitleTextBox.Visibility = UserNameTextBox.Visibility = PasswordTextBox.Visibility = Visibility.Visible;
+                TitleTextBox.Text = UserNameTextBox.Text = PasswordTextBox.Text = string.Empty;
+
+                TitleTextBox.IsEnabled = UserNameTextBox.IsEnabled = true;
+                PasswordTextBox.Visibility = Visibility.Collapsed;
+                PasswordBox.Visibility = Visibility.Visible;
+
                 this.TitleTextBox.Focus(FocusState.Keyboard);
             }
 
@@ -188,7 +218,7 @@ namespace PasswordManager
                 UserName = this.UserNameTextBox.Text,
                 Title = this.TitleTextBox.Text,
                 Key = this.TitleTextBox.Text,
-                PasswordText = this.PasswordTextBox.Password
+                PasswordText = this.PasswordBox.Password
             };
 
             Results addPasswordResults = Storage.AddPassword(passwordToBeSaved);
@@ -201,23 +231,10 @@ namespace PasswordManager
             }
             else
             {
-                this.TitleTextBox.Text = this.UserNameTextBox.Text = this.PasswordTextBox.Password = string.Empty;
+                this.TitleTextBox.Text = this.UserNameTextBox.Text = this.PasswordBox.Password = string.Empty;
                 this.PasswordModal.Visibility = Visibility.Collapsed;
 
                 this.RefreshScreen();
-            }
-        }
-
-        /// <summary>
-        /// The password view_ tapped.
-        /// </summary>
-        /// <param name="sender"> The sender. </param>
-        /// <param name="e"> The e. </param>
-        private void PasswordViewTapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
-        {
-            if (e.OriginalSource.GetType() == typeof(Grid))
-            {
-                this.PasswordModal.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -247,21 +264,6 @@ namespace PasswordManager
         {
             Storage.RemovePasswordList();
             this.RefreshScreen();
-        }
-
-        private void PasswordTextBox_KeyUp(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
-        {
-            if(e.Key == VirtualKey.Enter)
-            {
-                this.AddPasswordClick(sender, null);
-            }
-        }
-
-        private void PasswordTapped(object sender, TappedRoutedEventArgs e)
-        {
-            var selectedItem = (Password)PasswordView.SelectedItem;
-
-            ShowPasswordModal(selectedItem);
         }
     }
 }
