@@ -125,8 +125,7 @@ namespace PasswordManager
         {
             if (e.OriginalSource.GetType() == typeof(Grid))
             {
-                TitleBorder.BorderThickness = new Thickness(0);
-                this.PasswordModal.Visibility = Visibility.Collapsed;
+                this.ClosePasswordModal();
             }
         }
 
@@ -160,7 +159,7 @@ namespace PasswordManager
         /// <param name="e"> The e. </param>
         private void AddPasswordClick(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(UserNameTextBox.Text))
+            if (string.IsNullOrWhiteSpace(TitleTextBox.Text))
             {
                 TitleBorder.BorderThickness = new Thickness(4);
                 return;
@@ -192,6 +191,45 @@ namespace PasswordManager
                 this.RefreshScreen();
             }
         }
+
+        private void DeleteButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var selectedItem = ((Password)this.PasswordView.SelectedItem);
+            Debug.WriteLine("About to delete :" + selectedItem);
+
+            Storage.DeletePassword(selectedItem);
+
+            this.RefreshScreen();
+        }
+
+        private void EditButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            TitleTextBox.IsEnabled = UserNameTextBox.IsEnabled = true;
+            PasswordBox.Password = PasswordTextBox.Text;
+
+            DeleteButton.Visibility = EditButton.Visibility = PasswordTextBox.Visibility = Visibility.Collapsed;
+            CancelButton.Visibility = SaveButton.Visibility = PasswordBox.Visibility = Visibility.Visible;
+
+            this.TitleTextBox.Focus(FocusState.Keyboard);
+        }
+
+
+        private void CancelButton_OnTapped(object sender, TappedRoutedEventArgs e)
+        {
+            this.ClosePasswordModal();
+        }
+
+        private async void ClearPasswordClick(object sender, RoutedEventArgs e)
+        {
+            MessageDialog confirm = new MessageDialog("This will remove your entire password.  Are you sure?");
+            confirm.Commands.Add(new UICommand("OK", this.ClearPassword));
+            confirm.Commands.Add(new UICommand("Cancel"));
+            confirm.DefaultCommandIndex = 0;
+            confirm.CancelCommandIndex = 1;
+
+            await confirm.ShowAsync();
+        }
+
         #endregion
 
         private void ShowPasswordModal(Password selectedPassword)
@@ -208,7 +246,7 @@ namespace PasswordManager
                 PasswordTextBox.Visibility = Visibility.Visible;
                 PasswordBox.Visibility = Visibility.Collapsed;
 
-                SaveButton.Visibility = Visibility.Collapsed;
+                DeleteButton.Visibility = CancelButton.Visibility = SaveButton.Visibility = Visibility.Collapsed;
                 EditButton.Visibility = Visibility.Visible;
 
             }
@@ -217,7 +255,7 @@ namespace PasswordManager
                 TitleTextBox.Text = UserNameTextBox.Text = PasswordTextBox.Text = string.Empty;
 
                 TitleTextBox.IsEnabled = UserNameTextBox.IsEnabled = true;
-                EditButton.Visibility = PasswordTextBox.Visibility = Visibility.Collapsed;
+                DeleteButton.Visibility = EditButton.Visibility = PasswordTextBox.Visibility = Visibility.Collapsed;
                 SaveButton.Visibility = PasswordBox.Visibility = Visibility.Visible;
 
                 this.TitleTextBox.Focus(FocusState.Keyboard);
@@ -227,6 +265,12 @@ namespace PasswordManager
 
             var bottomAppBar = this.BottomAppBar;
             if (bottomAppBar != null) bottomAppBar.IsOpen = false;
+        }
+
+        private void ClosePasswordModal()
+        {
+            this.TitleBorder.BorderThickness = new Thickness(0);
+            this.PasswordModal.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>
@@ -239,30 +283,6 @@ namespace PasswordManager
             this.itemsViewSource.Source = null;
             this.itemsViewSource.Source = passwordList;
             this.PasswordView.SelectedIndex = -1;
-        }
-
-        
-
-        private void DeletePassword(IUICommand command)
-        {
-
-            var selectedItem = ((Password)this.PasswordView.SelectedItem);
-            Debug.WriteLine("About to delete :" + selectedItem);
-
-            Storage.DeletePassword(selectedItem);
-
-            this.RefreshScreen();
-        }
-
-        private async void ClearPasswordClick(object sender, RoutedEventArgs e)
-        {
-            MessageDialog confirm = new MessageDialog("This will remove your entire password.  Are you sure?");
-            confirm.Commands.Add(new UICommand("OK", this.ClearPassword));
-            confirm.Commands.Add(new UICommand("Cancel"));
-            confirm.DefaultCommandIndex = 0;
-            confirm.CancelCommandIndex = 1;
-
-            await confirm.ShowAsync();
         }
 
         private void ClearPassword(IUICommand command)

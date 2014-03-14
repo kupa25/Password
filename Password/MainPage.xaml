@@ -172,7 +172,7 @@
         </Style>
     </Page.Resources>
 
-    <Grid Name="MyCustomGridView" Background="White">
+    <Grid Background="White">
         <TextBlock HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" Text="Password Manager" VerticalAlignment="Top" FontSize="48"/>
         <GridView x:Name="PasswordView"
                     ItemTemplate="{StaticResource PasswordDisplayTemplate}"
@@ -204,7 +204,7 @@
                                 </LinearGradientBrush>
                             </Button.Background>
                         </Button>
-                        <Button x:Name="EditButton" FontSize="15" BorderBrush="{x:Null}" Foreground="#FF250D0D" RequestedTheme="Light" HorizontalAlignment="Right" Content="Edit" Visibility="Collapsed">
+                        <Button x:Name="EditButton" FontSize="15" BorderBrush="{x:Null}" Foreground="#FF250D0D" RequestedTheme="Light" HorizontalAlignment="Right" Content="Edit" Visibility="Collapsed" Click="EditButton_OnClick">
                             <Button.Background>
                                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                     <GradientStop Color="#FFF1C44B" Offset="0"/>
@@ -212,7 +212,7 @@
                                 </LinearGradientBrush>
                             </Button.Background>
                         </Button>
-                        <Button x:Name="CancelButton" FontSize="15" BorderBrush="{x:Null}" Foreground="#FF250D0D" RequestedTheme="Light" HorizontalAlignment="Right" Content="Cancel" Visibility="Collapsed">
+                        <Button x:Name="CancelButton" FontSize="15" BorderBrush="{x:Null}" Foreground="#FF250D0D" RequestedTheme="Light" HorizontalAlignment="Right" Content="Cancel" Visibility="Collapsed" Tapped="CancelButton_OnTapped">
                             <Button.Background>
                                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                     <GradientStop Color="#FFF1C44B" Offset="0"/>
@@ -220,7 +220,7 @@
                                 </LinearGradientBrush>
                             </Button.Background>
                         </Button>
-                        <Button x:Name="DeleteButton" FontSize="15" BorderBrush="{x:Null}" Foreground="#FF250D0D" RequestedTheme="Light" HorizontalAlignment="Right" Content="Delete" Visibility="Collapsed">
+                        <Button x:Name="DeleteButton" FontSize="15" BorderBrush="{x:Null}" Foreground="#FF250D0D" RequestedTheme="Light" HorizontalAlignment="Right" Content="Delete" Visibility="Collapsed" Click="DeleteButton_OnClick">
                             <Button.Background>
                                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                     <GradientStop Color="#FFF1C44B" Offset="0"/>
