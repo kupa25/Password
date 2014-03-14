@@ -142,7 +142,6 @@ namespace PasswordManager
         {
             ShowPasswordModal((Password)PasswordView.SelectedItem);
         }
-        #endregion
 
         /// <summary>
         /// Show Password modal.
@@ -152,50 +151,6 @@ namespace PasswordManager
         private void ShowPasswordModal(object sender, RoutedEventArgs e)
         {
             ShowPasswordModal(null);
-        }
-
-        private void ShowPasswordModal(Password selectedPassword)
-        {
-            if (selectedPassword != null)
-            {
-                //Display the password
-
-                TitleTextBox.Text = selectedPassword.Title;
-                UserNameTextBox.Text = selectedPassword.UserName;
-                PasswordTextBox.Text = selectedPassword.PasswordText;
-
-                TitleTextBox.IsEnabled = UserNameTextBox.IsEnabled = false;
-                PasswordTextBox.Visibility = Visibility.Visible;
-                PasswordBox.Visibility = Visibility.Collapsed;
-
-            }
-            else
-            {
-                TitleTextBox.Text = UserNameTextBox.Text = PasswordTextBox.Text = string.Empty;
-
-                TitleTextBox.IsEnabled = UserNameTextBox.IsEnabled = true;
-                PasswordTextBox.Visibility = Visibility.Collapsed;
-                PasswordBox.Visibility = Visibility.Visible;
-
-                this.TitleTextBox.Focus(FocusState.Keyboard);
-            }
-
-            this.PasswordModal.Visibility = Visibility.Visible;
-
-            var bottomAppBar = this.BottomAppBar;
-            if (bottomAppBar != null) bottomAppBar.IsOpen = false;
-        }
-
-        /// <summary>
-        /// Refresh the Grid View
-        /// </summary>
-        private void RefreshScreen()
-        {
-            var passwordList = Storage.RetreivePassword();
-
-            this.itemsViewSource.Source = null;
-            this.itemsViewSource.Source = passwordList;
-            this.PasswordView.SelectedIndex = -1;
         }
 
         /// <summary>
@@ -237,6 +192,56 @@ namespace PasswordManager
                 this.RefreshScreen();
             }
         }
+        #endregion
+
+        private void ShowPasswordModal(Password selectedPassword)
+        {
+            if (selectedPassword != null)
+            {
+                //Display the password
+
+                TitleTextBox.Text = selectedPassword.Title;
+                UserNameTextBox.Text = selectedPassword.UserName;
+                PasswordTextBox.Text = selectedPassword.PasswordText;
+
+                TitleTextBox.IsEnabled = UserNameTextBox.IsEnabled = false;
+                PasswordTextBox.Visibility = Visibility.Visible;
+                PasswordBox.Visibility = Visibility.Collapsed;
+
+                SaveButton.Visibility = Visibility.Collapsed;
+                EditButton.Visibility = Visibility.Visible;
+
+            }
+            else
+            {
+                TitleTextBox.Text = UserNameTextBox.Text = PasswordTextBox.Text = string.Empty;
+
+                TitleTextBox.IsEnabled = UserNameTextBox.IsEnabled = true;
+                EditButton.Visibility = PasswordTextBox.Visibility = Visibility.Collapsed;
+                SaveButton.Visibility = PasswordBox.Visibility = Visibility.Visible;
+
+                this.TitleTextBox.Focus(FocusState.Keyboard);
+            }
+
+            this.PasswordModal.Visibility = Visibility.Visible;
+
+            var bottomAppBar = this.BottomAppBar;
+            if (bottomAppBar != null) bottomAppBar.IsOpen = false;
+        }
+
+        /// <summary>
+        /// Refresh the Grid View
+        /// </summary>
+        private void RefreshScreen()
+        {
+            var passwordList = Storage.RetreivePassword();
+
+            this.itemsViewSource.Source = null;
+            this.itemsViewSource.Source = passwordList;
+            this.PasswordView.SelectedIndex = -1;
+        }
+
+        
 
         private void DeletePassword(IUICommand command)
         {
