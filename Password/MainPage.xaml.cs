@@ -249,6 +249,7 @@ namespace PasswordManager
                 DeleteButton.Visibility = CancelButton.Visibility = SaveButton.Visibility = Visibility.Collapsed;
                 EditButton.Visibility = Visibility.Visible;
 
+                Storage.tempPassword = selectedPassword;
             }
             else
             {

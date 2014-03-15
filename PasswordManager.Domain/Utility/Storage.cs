@@ -39,6 +39,8 @@ namespace PasswordManager.Helper.Utility
             }
         }
 
+        public static Password tempPassword;
+
         public static List<Password> RetreivePassword()
         {
             cachedPasswordList.Sort();
@@ -102,12 +104,32 @@ namespace PasswordManager.Helper.Utility
                 try
                 {
                     // Have a rollback mechanism so that if any of the storage fails then we rollback.
+                    var pair = CreateKeyValuePair(pwd);
 
-                    localStorage.Values.Add(CreateKeyValuePair(pwd));
+                    var foundValue = localStorage.Values.Contains(pair);
+
+                    if (foundValue)
+                    {
+                        localStorage.Values.Remove(pair.Key);
+                    }
+
+                    localStorage.Values.Add(pair);
 
                     if (Helper.IsInternet)
                     {
+                        foundValue = cloudStorage.Values.Contains(pair);
+
+                        if (foundValue)
+                        {
+                            cloudStorage.Values.Remove(pair.Key);
+                        }
+
                         cloudStorage.Values.Add(CreateKeyValuePair(pwd));
+                    }
+
+                    if (cachedPasswordList.Contains(tempPassword))
+                    {
+                        cachedPasswordList.Remove(tempPassword);
                     }
 
                     cachedPasswordList.Add(pwd);
