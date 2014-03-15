@@ -105,26 +105,35 @@ namespace PasswordManager.Helper.Utility
                 {
                     // Have a rollback mechanism so that if any of the storage fails then we rollback.
                     var pair = CreateKeyValuePair(pwd);
+                    bool foundValue = false;
 
-                    var foundValue = localStorage.Values.Contains(pair);
+                    if (tempPassword != null)
+                    {
+                        foundValue = localStorage.Values.ContainsKey(tempPassword.Key);
+                    }
 
                     if (foundValue)
                     {
-                        localStorage.Values.Remove(pair.Key);
+                        localStorage.Values.Remove(tempPassword.Key);
                     }
 
                     localStorage.Values.Add(pair);
 
                     if (Helper.IsInternet)
                     {
-                        foundValue = cloudStorage.Values.Contains(pair);
+                        foundValue = false;
+
+                        if (tempPassword != null)
+                        {
+                            foundValue = cloudStorage.Values.ContainsKey(tempPassword.Key);
+                        }
 
                         if (foundValue)
                         {
-                            cloudStorage.Values.Remove(pair.Key);
+                            cloudStorage.Values.Remove(tempPassword.Key);
                         }
 
-                        cloudStorage.Values.Add(CreateKeyValuePair(pwd));
+                        cloudStorage.Values.Add(pair);
                     }
 
                     if (cachedPasswordList.Contains(tempPassword))

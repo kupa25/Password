@@ -179,9 +179,9 @@
                     ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
                     Tapped="PasswordViewTapped" Margin="0,120,0,0" />
         
-            <StackPanel  HorizontalAlignment="Center" VerticalAlignment="Center" Name="PasswordModal" Width="300">
+            <StackPanel  HorizontalAlignment="Center" VerticalAlignment="Center" Name="PasswordModal">
             <Border BorderBrush="#FFF1BE34" BorderThickness="10" CornerRadius="5" Background="#FF6E6969" RequestedTheme="Dark">
-                <StackPanel>
+                <StackPanel Width="400" Height="250">
                     <StackPanel.ChildrenTransitions>
                         <TransitionCollection>
                             <EdgeUIThemeTransition/>
@@ -189,14 +189,14 @@
                     </StackPanel.ChildrenTransitions>
                     
                     <Border Name="TitleBorder" BorderBrush="Red">
-                        <TextBox PlaceholderText="Title" Name="TitleTextBox" FontSize="20" BorderBrush="#FF746F6F" Style="{StaticResource TextBoxStyle1}"></TextBox>
+                        <TextBox PlaceholderText="Title" Name="TitleTextBox" FontSize="30" BorderBrush="#FF746F6F" Style="{StaticResource TextBoxStyle1}" Height="60"></TextBox>
                     </Border>
-                    <TextBox PlaceholderText="User Name" Name="UserNameTextBox" BorderBrush="#FF746F6F" FontSize="20" BorderThickness="2,0,2,2" Style="{StaticResource TextBoxStyle1}"/>
-                    <TextBox Name="PasswordTextBox" FontSize="20" BorderBrush="#FF746F6F" BorderThickness="2,0,2,2" IsEnabled="False" Visibility="Collapsed" Style="{StaticResource TextBoxStyle1}"></TextBox>
-                    <PasswordBox PlaceholderText="Password" Name="PasswordBox" FontSize="20" BorderBrush="#FF746F6F" KeyUp="PasswordBox_KeyUp" BorderThickness="2,0,2,2"></PasswordBox>
+                    <TextBox PlaceholderText="User Name" Name="UserNameTextBox" BorderBrush="#FF746F6F" FontSize="30" BorderThickness="2,0,2,2" Style="{StaticResource TextBoxStyle1}" Height="60"/>
+                    <TextBox Name="PasswordTextBox" FontSize="20" BorderBrush="#FF746F6F" BorderThickness="2,0,2,2" IsEnabled="False" Visibility="Collapsed" Style="{StaticResource TextBoxStyle1}" Height="60"></TextBox>
+                    <PasswordBox PlaceholderText="Password" Name="PasswordBox" FontSize="30" BorderBrush="#FF746F6F" KeyUp="PasswordBox_KeyUp" BorderThickness="2,0,2,2" Height="60"></PasswordBox>
                     
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button x:Name="SaveButton" FontSize="15" Click="AddPasswordClick" BorderBrush="{x:Null}" Foreground="#FF250D0D" RequestedTheme="Light" HorizontalAlignment="Right" Content="Save">
+                        <Button x:Name="SaveButton" FontSize="30" Click="AddPasswordClick" BorderBrush="{x:Null}" Foreground="#FF250D0D" RequestedTheme="Light" HorizontalAlignment="Right" Content="Save" Width="100" Height="60" Margin="0,4,0,0">
                             <Button.Background>
                                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                     <GradientStop Color="#FFF1C44B" Offset="0"/>
@@ -204,7 +204,7 @@
                                 </LinearGradientBrush>
                             </Button.Background>
                         </Button>
-                        <Button x:Name="EditButton" FontSize="15" BorderBrush="{x:Null}" Foreground="#FF250D0D" RequestedTheme="Light" HorizontalAlignment="Right" Content="Edit" Visibility="Collapsed" Click="EditButton_OnClick">
+                        <Button x:Name="EditButton" FontSize="30" BorderBrush="{x:Null}" Foreground="#FF250D0D" RequestedTheme="Light" HorizontalAlignment="Right" Content="Edit" Visibility="Collapsed" Width="100" Height="60" Margin="0,4,0,0" Click="EditButton_OnClick">
                             <Button.Background>
                                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                     <GradientStop Color="#FFF1C44B" Offset="0"/>
@@ -212,7 +212,7 @@
                                 </LinearGradientBrush>
                             </Button.Background>
                         </Button>
-                        <Button x:Name="CancelButton" FontSize="15" BorderBrush="{x:Null}" Foreground="#FF250D0D" RequestedTheme="Light" HorizontalAlignment="Right" Content="Cancel" Visibility="Collapsed" Tapped="CancelButton_OnTapped">
+                        <Button x:Name="CancelButton" FontSize="30" BorderBrush="{x:Null}" Foreground="#FF250D0D" RequestedTheme="Light" HorizontalAlignment="Right" Content="Cancel" Width="120" Height="60" Margin="0,4,0,0" Tapped="CancelButton_OnTapped">
                             <Button.Background>
                                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                     <GradientStop Color="#FFF1C44B" Offset="0"/>
@@ -220,7 +220,7 @@
                                 </LinearGradientBrush>
                             </Button.Background>
                         </Button>
-                        <Button x:Name="DeleteButton" FontSize="15" BorderBrush="{x:Null}" Foreground="#FF250D0D" RequestedTheme="Light" HorizontalAlignment="Right" Content="Delete" Visibility="Collapsed" Click="DeleteButton_OnClick">
+                        <Button x:Name="DeleteButton" FontSize="30" BorderBrush="{x:Null}" Foreground="#FF250D0D" RequestedTheme="Light" HorizontalAlignment="Right" Content="Delete" Visibility="Collapsed" Width="100" Height="60" Margin="0,4,0,0" Click="DeleteButton_OnClick">
                             <Button.Background>
                                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                     <GradientStop Color="#FFF1C44B" Offset="0"/>
