@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using Windows.ApplicationModel.Background;
-using PasswordManager.Helper.Utility;
+//using PasswordManager..Utility;
 
 namespace PasswordManager.Background
 {
@@ -9,7 +9,7 @@ namespace PasswordManager.Background
         public void Run(IBackgroundTaskInstance taskInstance)
         {
             Debug.WriteLine("Running Background Task");
-            Storage.sync();
+            //Storage.sync();
         }
     }
 }
