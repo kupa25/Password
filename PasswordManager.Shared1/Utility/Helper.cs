@@ -4,7 +4,7 @@ namespace PasswordManager.Helper.Utility
 {
     public class Helper
     {
-        public static bool IsInternet
+        public static bool IsInternetAvailable
         {
             get
             {

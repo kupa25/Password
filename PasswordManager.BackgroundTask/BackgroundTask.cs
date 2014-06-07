@@ -10,6 +10,12 @@ namespace PasswordManager.Background
         private static ApplicationDataContainer cloudStorage = ApplicationData.Current.RoamingSettings;
         private static ApplicationDataContainer localStorage = ApplicationData.Current.LocalSettings;
 
+        public void Run(IBackgroundTaskInstance taskInstance)
+        {
+            Debug.WriteLine("Running Background Task");
+            Sync();
+        }
+
         public static bool IsInternetAvailable
         {
             get
@@ -29,6 +35,12 @@ namespace PasswordManager.Background
 
                 int cloudVersion = cloudStorage.Values.ContainsKey("Version") ? (int)cloudStorage.Values["Version"] : 0;
                 int localVersion = localStorage.Values.ContainsKey("Version") ? (int)localStorage.Values["Version"] : 0;
+
+                Debug.WriteLine(
+                    string.Format(@"--- Version Check ---
+                                    Cloud Version :{0}
+                                    Local Version :{1}", cloudVersion, localVersion));
+                
 
                 if (cloudVersion > localVersion)
                 {
@@ -52,12 +64,6 @@ namespace PasswordManager.Background
                     }
                 }
             }
-        }
-
-        public void Run(IBackgroundTaskInstance taskInstance)
-        {
-            Debug.WriteLine("Running Background Task");
-            Sync();
         }
     }
 }

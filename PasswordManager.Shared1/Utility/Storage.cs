@@ -22,7 +22,7 @@ namespace PasswordManager.Helper.Utility
                 {
                     passwordList = GetPassword(localStorage);
 
-                    if (Helper.IsInternet)
+                    if (Helper.IsInternetAvailable)
                     {
                         if (passwordList.Count <= 0)
                         {
@@ -69,33 +69,55 @@ namespace PasswordManager.Helper.Utility
         {
             Debug.WriteLine("Trying to Synchronize");
 
-            if (Helper.IsInternet)
+            int cloudVersion = cloudStorage.Values.ContainsKey("Version") ? (int)cloudStorage.Values["Version"] : 0;
+            int localVersion = localStorage.Values.ContainsKey("Version") ? (int)localStorage.Values["Version"] : 0;
+
+            if (Helper.IsInternetAvailable)
             {
-                // Bring the list of password down from cloud (Version Check)
+                // (Version Check)
+                Debug.WriteLine(
+                    string.Format(@"--- Version Check ---
+                                    Cloud Version :{0}
+                                    Local Version :{1}", cloudVersion, localVersion));
 
-                // sync up from cache to cloud
-                foreach (Password pwd in cachedPasswordList)
+                if (cloudVersion > localVersion)
                 {
-                    if (!cloudStorage.Values.ContainsKey(pwd.Key))
+                    // restore down from cloud
+
+                    localStorage.Values.Clear();
+
+                    foreach (var value in cloudStorage.Values)
                     {
-                        Debug.WriteLine("SYNC UP: "+ pwd);
-                        cloudStorage.Values.Add(CreateKeyValuePair(pwd));
+                        localStorage.Values.Add(value);
                     }
                 }
-
-                // Sync stuff down from cloud to local
-                foreach (Password pwd in GetPassword(cloudStorage))
+                else
                 {
-                    if (!localStorage.Values.ContainsKey(pwd.Key))
+                    // Sync up
+                    cloudStorage.Values.Clear();
+
+                    foreach (var value in localStorage.Values)
                     {
-                        Debug.WriteLine("SYNC Down: " + pwd);
-                        localStorage.Values.Add(CreateKeyValuePair(pwd));
+                        cloudStorage.Values.Add(value);
                     }
                 }
-
-                // update the cache from local
-                cachedPasswordList = GetPassword(localStorage);
             }
+
+            if (Helper.IsInternetAvailable && cloudStorage.Values.ContainsKey("Version"))
+            {
+                cloudStorage.Values.Remove("Version");
+            }
+
+            if (localStorage.Values.ContainsKey("Version"))
+            {
+                localStorage.Values.Remove("Version");
+            }
+
+            cloudStorage.Values.Add("Version", cloudVersion + 1);
+            localStorage.Values.Add("Version", cloudVersion + 1);
+
+            // update the cache from local
+            cachedPasswordList = GetPassword(localStorage);
         }
 
         public static Results AddPassword(Password pwd)
@@ -121,7 +143,7 @@ namespace PasswordManager.Helper.Utility
 
                     localStorage.Values.Add(pair);
 
-                    if (Helper.IsInternet)
+                    if (Helper.IsInternetAvailable)
                     {
                         foundValue = false;
 
