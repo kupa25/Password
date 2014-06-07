@@ -71,7 +71,9 @@ namespace PasswordManager.Helper.Utility
 
             if (Helper.IsInternet)
             {
-                // sync from up from cache to cloud
+                // Bring the list of password down from cloud (Version Check)
+
+                // sync up from cache to cloud
                 foreach (Password pwd in cachedPasswordList)
                 {
                     if (!cloudStorage.Values.ContainsKey(pwd.Key))
