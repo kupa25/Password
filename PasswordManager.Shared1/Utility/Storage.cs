@@ -69,11 +69,11 @@ namespace PasswordManager.Helper.Utility
         {
             Debug.WriteLine("Trying to Synchronize");
 
-            int cloudVersion = cloudStorage.Values.ContainsKey("Version") ? (int)cloudStorage.Values["Version"] : 0;
-            int localVersion = localStorage.Values.ContainsKey("Version") ? (int)localStorage.Values["Version"] : 0;
-
             if (Helper.IsInternetAvailable)
             {
+                int cloudVersion = cloudStorage.Values.ContainsKey("Version") ? (int)cloudStorage.Values["Version"] : 0;
+                int localVersion = localStorage.Values.ContainsKey("Version") ? (int)localStorage.Values["Version"] : 0;
+
                 // (Version Check)
                 Debug.WriteLine(
                     string.Format(@"--- Version Check ---
@@ -101,20 +101,20 @@ namespace PasswordManager.Helper.Utility
                         cloudStorage.Values.Add(value);
                     }
                 }
-            }
 
-            if (Helper.IsInternetAvailable && cloudStorage.Values.ContainsKey("Version"))
-            {
-                cloudStorage.Values.Remove("Version");
-            }
+                if (cloudStorage.Values.ContainsKey("Version"))
+                {
+                    cloudStorage.Values.Remove("Version");
+                }
 
-            if (localStorage.Values.ContainsKey("Version"))
-            {
-                localStorage.Values.Remove("Version");
+                if (localStorage.Values.ContainsKey("Version"))
+                {
+                    localStorage.Values.Remove("Version");
+                }
+                
+                cloudStorage.Values.Add("Version", cloudVersion + 1);
+                localStorage.Values.Add("Version", cloudVersion + 1);
             }
-
-            cloudStorage.Values.Add("Version", cloudVersion + 1);
-            localStorage.Values.Add("Version", cloudVersion + 1);
 
             // update the cache from local
             cachedPasswordList = GetPassword(localStorage);
@@ -158,6 +158,27 @@ namespace PasswordManager.Helper.Utility
                         }
 
                         cloudStorage.Values.Add(pair);
+
+                        if (localStorage.Values.ContainsKey("Sync"))
+                        {
+                            localStorage.Values.Remove("Sync");   
+                        }
+                    }
+                    else
+                    {
+                        if (!localStorage.Values.ContainsKey("Sync"))
+                        {
+                            int localversion = 0;
+                            if (localStorage.Values.ContainsKey("Version"))
+                            {
+                                localversion = (int)localStorage.Values["Version"];
+                                localStorage.Values.Remove("Version");
+                            }
+
+                            localStorage.Values.Add("Version", localversion + 1);
+                            localStorage.Values.Add("Sync", true);
+                        }
+
                     }
 
                     if (cachedPasswordList.Contains(tempPassword))
