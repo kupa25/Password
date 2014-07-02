@@ -71,8 +71,11 @@ namespace PasswordManager.Helper.Utility
 
             if (Helper.IsInternetAvailable)
             {
-                int cloudVersion = cloudStorage.Values.ContainsKey("Version") ? (int)cloudStorage.Values["Version"] : 0;
-                int localVersion = localStorage.Values.ContainsKey("Version") ? (int)localStorage.Values["Version"] : 0;
+                int cloudVersion = cloudStorage.Values.ContainsKey("Version") ? 
+                    (int)cloudStorage.Values["Version"] : 0;
+
+                int localVersion = localStorage.Values.ContainsKey("Version") ? 
+                    (int)localStorage.Values["Version"] : 0;
 
                 // (Version Check)
                 Debug.WriteLine(
@@ -80,7 +83,7 @@ namespace PasswordManager.Helper.Utility
                                     Cloud Version :{0}
                                     Local Version :{1}", cloudVersion, localVersion));
 
-                if (cloudVersion > localVersion)
+                if (cloudVersion >= localVersion)
                 {
                     // restore down from cloud
 
@@ -127,7 +130,7 @@ namespace PasswordManager.Helper.Utility
             {
                 try
                 {
-                    // Have a rollback mechanism so that if any of the storage fails then we rollback.
+                    //TODO: Have a rollback mechanism so that if any of the storage fails then we rollback.
                     var pair = CreateKeyValuePair(pwd);
                     bool foundValue = false;
 

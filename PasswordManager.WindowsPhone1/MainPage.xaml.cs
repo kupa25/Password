@@ -12,8 +12,9 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
+using PasswordManager.Helper.Domain;
+using PasswordManager.Helper.Utility;
 
 namespace PasswordManager
 {
@@ -27,6 +28,23 @@ namespace PasswordManager
             this.InitializeComponent();
 
             this.NavigationCacheMode = NavigationCacheMode.Required;
+            this.RefreshScreen();
+            //var passwordlist = new List<Password>();
+            //passwordlist.Add(new Password(){Key = "Hello", PasswordText = " World ", Title = "Hello"});
+
+            //this.itemsViewSource.Source = passwordlist;
+        }
+
+        /// <summary>
+        /// Refresh the Grid View
+        /// </summary>
+        private void RefreshScreen()
+        {
+            var passwordList = Storage.RetreivePassword();
+
+            this.itemsViewSource.Source = null;
+            this.itemsViewSource.Source = passwordList;
+            this.PasswordView.SelectedIndex = -1;
         }
 
         /// <summary>

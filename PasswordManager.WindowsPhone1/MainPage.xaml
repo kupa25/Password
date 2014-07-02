@@ -8,7 +8,29 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Page.Resources>
+        <CollectionViewSource x:Name="itemsViewSource" />
 
+        <DataTemplate x:Key="PasswordDisplayTemplate">
+            <StackPanel Orientation="Horizontal">
+                <Border Background="#66727272" Width="40" Height="40" Margin="10" CornerRadius="50">
+                    <TextBlock Text="{Binding AlphaIcon}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Border>
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center" >
+                    <TextBlock Text="{Binding Title}" />
+                </StackPanel>
+            </StackPanel>
+        </DataTemplate>
+    </Page.Resources>
+    
+    <Grid>
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+            <TextBlock Text="Password Pal" FontSize="50"/>
+
+            <GridView x:Name="PasswordView"
+                    ItemTemplate="{StaticResource PasswordDisplayTemplate}"
+                    ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
+                    />
+        </StackPanel>
     </Grid>
 </Page>
