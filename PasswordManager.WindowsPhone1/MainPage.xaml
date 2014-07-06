@@ -6,7 +6,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="White"
+    Foreground="Black">
 
     <Page.Resources>
         <CollectionViewSource x:Name="itemsViewSource" />
@@ -22,7 +23,6 @@
             </StackPanel>
         </DataTemplate>
     </Page.Resources>
-    
     <Grid>
         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
             <TextBlock Text="Password Pal" FontSize="50"/>
@@ -32,5 +32,22 @@
                     ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
                     />
         </StackPanel>
+
+        <StackPanel Name="PasswordModal" VerticalAlignment="Top" Visibility="Collapsed">
+            <Border Background="gray">
+            <StackPanel>
+                <TextBox Name="TitleTextBox" PlaceholderText="Title"></TextBox>
+                <TextBox Name="UserNameTextBox" PlaceholderText="Username"></TextBox>
+                <PasswordBox Name="PasswordBox" PlaceholderText="Password"></PasswordBox>
+                <Button Name="SavePassword" Click="SavePassword_Click">Save</Button>
+            </StackPanel>
+            </Border>
+        </StackPanel>
     </Grid>
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Label="Add Password" Icon="Add" Click="AddPassword" />
+            <AppBarButton Label="Clear Password List" Icon="Delete" Click="ClearPassword"/>
+        </CommandBar>
+    </Page.BottomAppBar>
 </Page>

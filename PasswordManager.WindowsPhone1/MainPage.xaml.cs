@@ -62,5 +62,51 @@ namespace PasswordManager
             // If you are using the NavigationHelper provided by some templates,
             // this event is handled for you.
         }
+
+        private void ClearPassword(object sender, RoutedEventArgs e)
+        {
+            //TODO: code for clearing
+        }
+
+        private void AddPassword(object sender, RoutedEventArgs e)
+        {
+            PasswordModal.Visibility = PasswordModal.Visibility == Visibility.Visible ? Visibility.Collapsed: Visibility.Visible;
+        }
+
+        private void SavePassword_Click(object sender, RoutedEventArgs e)
+        {
+            //if (string.IsNullOrWhiteSpace(TitleTextBox.Text))
+            //{
+            //    TitleBorder.BorderThickness = new Thickness(4);
+            //    return;
+            //}
+
+            //TitleBorder.BorderThickness = new Thickness(0);
+
+            var passwordToBeSaved = new Password
+            {
+                UserName = this.UserNameTextBox.Text,
+                Title = this.TitleTextBox.Text,
+                Key = this.TitleTextBox.Text,
+                PasswordText = this.PasswordBox.Password
+            };
+
+            Results addPasswordResults = Storage.AddPassword(passwordToBeSaved);
+
+            if (addPasswordResults.ResultsType == ResultsType.Error)
+            {
+                //TODO:Error Handling
+                //MessageDialog messagebox = new MessageDialog(addPasswordResults.Message, "Cannot add the Password");
+                //messagebox.ShowAsync();
+                //Debug.WriteLine(addPasswordResults.Message);
+            }
+            else
+            {
+                this.TitleTextBox.Text = this.UserNameTextBox.Text = this.PasswordBox.Password = string.Empty;
+                this.PasswordModal.Visibility = Visibility.Collapsed;
+
+                this.RefreshScreen();
+            }
+        }
     }
 }
