@@ -70,7 +70,12 @@ namespace PasswordManager
 
         private void AddPassword(object sender, RoutedEventArgs e)
         {
-            PasswordModal.Visibility = PasswordModal.Visibility == Visibility.Visible ? Visibility.Collapsed: Visibility.Visible;
+            ShowPasswordModal(null);
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            PasswordModal.Visibility = Visibility.Collapsed;
         }
 
         private void SavePassword_Click(object sender, RoutedEventArgs e)
@@ -107,6 +112,50 @@ namespace PasswordManager
 
                 this.RefreshScreen();
             }
+        }
+
+        private void StackPanel_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            ShowPasswordModal((Password)PasswordView.SelectedItem);
+        }
+
+        private void ShowPasswordModal(Password selectedPassword)
+        {
+            if (selectedPassword != null)
+            {
+                //Display the password
+
+                TitleTextBox.Text = selectedPassword.Title;
+                UserNameTextBox.Text = selectedPassword.UserName;
+                PasswordTextBox.Text = selectedPassword.PasswordText;
+
+                PasswordTextBox.IsEnabled = TitleTextBox.IsEnabled = UserNameTextBox.IsEnabled = false;
+                PasswordTextBox.Visibility = Visibility.Visible;
+                PasswordBox.Visibility = Visibility.Collapsed;
+                
+
+                //DeleteButton.Visibility = CancelButton.Visibility = 
+                    SaveButton.Visibility = Visibility.Collapsed;
+//                EditButton.Visibility = Visibility.Visible;
+
+                Storage.tempPassword = selectedPassword;
+            }
+            else
+            {
+                TitleTextBox.Text = UserNameTextBox.Text = PasswordTextBox.Text = string.Empty;
+
+                TitleTextBox.IsEnabled = UserNameTextBox.IsEnabled = true;
+                //DeleteButton.Visibility = EditButton.Visibility = 
+                PasswordTextBox.Visibility = Visibility.Collapsed;
+                SaveButton.Visibility = PasswordBox.Visibility = Visibility.Visible;
+
+                this.TitleTextBox.Focus(FocusState.Keyboard);
+            }
+
+            this.PasswordModal.Visibility = Visibility.Visible;
+
+            //var bottomAppBar = this.BottomAppBar;
+            //if (bottomAppBar != null) bottomAppBar.IsOpen = false;
         }
     }
 }

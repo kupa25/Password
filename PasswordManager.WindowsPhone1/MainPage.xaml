@@ -13,7 +13,7 @@
         <CollectionViewSource x:Name="itemsViewSource" />
 
         <DataTemplate x:Key="PasswordDisplayTemplate">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Tapped="StackPanel_Tapped">
                 <Border Background="#66727272" Width="40" Height="40" Margin="10" CornerRadius="50">
                     <TextBlock Text="{Binding AlphaIcon}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </Border>
@@ -26,11 +26,12 @@
     <Grid>
         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
             <TextBlock Text="Password Pal" FontSize="50"/>
-
+            <StackPanel Orientation="Vertical">
             <GridView x:Name="PasswordView"
                     ItemTemplate="{StaticResource PasswordDisplayTemplate}"
                     ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
                     />
+            </StackPanel>
         </StackPanel>
 
         <StackPanel Name="PasswordModal" VerticalAlignment="Top" Visibility="Collapsed">
@@ -38,16 +39,20 @@
             <StackPanel>
                 <TextBox Name="TitleTextBox" PlaceholderText="Title"></TextBox>
                 <TextBox Name="UserNameTextBox" PlaceholderText="Username"></TextBox>
+                <TextBox Name="PasswordTextBox" Visibility="Collapsed"></TextBox>
                 <PasswordBox Name="PasswordBox" PlaceholderText="Password"></PasswordBox>
-                <Button Name="SavePassword" Click="SavePassword_Click">Save</Button>
-            </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                    <Button Name="SaveButton" Click="SavePassword_Click">Save</Button>
+                    <Button Name="CancelButton" Click="CancelButton_Click">Close</Button>
+                    </StackPanel>
+                </StackPanel>
             </Border>
         </StackPanel>
     </Grid>
     <Page.BottomAppBar>
         <CommandBar>
             <AppBarButton Label="Add Password" Icon="Add" Click="AddPassword" />
-            <AppBarButton Label="Clear Password List" Icon="Delete" Click="ClearPassword"/>
+            <!--<AppBarButton Label="Clear Password List" Icon="Delete" Click="ClearPassword"/>-->
         </CommandBar>
     </Page.BottomAppBar>
 </Page>
