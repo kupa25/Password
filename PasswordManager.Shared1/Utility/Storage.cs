@@ -71,11 +71,9 @@ namespace PasswordManager.Helper.Utility
 
             if (Helper.IsInternetAvailable)
             {
-                int cloudVersion = cloudStorage.Values.ContainsKey("Version") ? 
-                    (int)cloudStorage.Values["Version"] : 0;
+                int cloudVersion = GetValueFromCloud("Version");
 
-                int localVersion = localStorage.Values.ContainsKey("Version") ? 
-                    (int)localStorage.Values["Version"] : 0;
+                int localVersion = GetValueFromCache("Version");
 
                 // (Version Check)
                 Debug.WriteLine(
@@ -103,24 +101,48 @@ namespace PasswordManager.Helper.Utility
                     {
                         cloudStorage.Values.Add(value);
                     }
-                }
 
-                if (cloudStorage.Values.ContainsKey("Version"))
-                {
-                    cloudStorage.Values.Remove("Version");
-                }
+                    if (cloudStorage.Values.ContainsKey("Version"))
+                    {
+                        cloudStorage.Values.Remove("Version");
+                    }
 
-                if (localStorage.Values.ContainsKey("Version"))
-                {
-                    localStorage.Values.Remove("Version");
+                    if (localStorage.Values.ContainsKey("Version"))
+                    {
+                        localStorage.Values.Remove("Version");
+                    }
+
+                    cloudStorage.Values.Add("Version", cloudVersion + 1);
+                    localStorage.Values.Add("Version", cloudVersion + 1);
                 }
-                
-                cloudStorage.Values.Add("Version", cloudVersion + 1);
-                localStorage.Values.Add("Version", cloudVersion + 1);
             }
 
             // update the cache from local
             cachedPasswordList = GetPassword(localStorage);
+        }
+
+        private static int GetValueFromCache(string p)
+        {
+            return localStorage.Values.ContainsKey(p)
+                ? (int) localStorage.Values[p]
+                : 0;
+        }
+
+        private static int GetValueFromCloud(string p)
+        {
+            return cloudStorage.Values.ContainsKey(p)
+                ? (int) cloudStorage.Values[p]
+                : 0;
+        }
+
+        private static void AddValueToCloud(string key, object obj)
+        {
+            if (cloudStorage.Values.ContainsKey(key))
+            {
+                cloudStorage.Values.Remove(key);
+            }
+
+            cloudStorage.Values.Add(key, obj);
         }
 
         public static Results AddPassword(Password pwd)
@@ -219,8 +241,15 @@ namespace PasswordManager.Helper.Utility
         public static void RemovePasswordList()
         {
             cachedPasswordList = null;
+
+            //Retreive the version and increment it for synchronization purpose.
+            string key = "Version";
+            int version = GetValueFromCloud(key) + 1;
+
             localStorage.Values.Clear();
             cloudStorage.Values.Clear();
+
+            AddValueToCloud(key, version);
         }
 
         public static void Convert()

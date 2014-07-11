@@ -26,12 +26,12 @@
     <Grid>
         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
             <TextBlock Text="Password Pal" FontSize="50"/>
-            <StackPanel Orientation="Vertical">
-            <GridView x:Name="PasswordView"
+            
+            <ListView x:Name="PasswordView" 
                     ItemTemplate="{StaticResource PasswordDisplayTemplate}"
                     ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
                     />
-            </StackPanel>
+            
         </StackPanel>
 
         <StackPanel Name="PasswordModal" VerticalAlignment="Top" Visibility="Collapsed">
