@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="31366Kshitij.PasswordPal" Publisher="CN=31DAE921-5108-420E-A31E-D77E1C37C4AF" Version="3.1.0.2" />
+  <Identity Name="31366Kshitij.PasswordPal" Publisher="CN=31DAE921-5108-420E-A31E-D77E1C37C4AF" Version="4.1.0.0" />
   <Properties>
     <DisplayName>PasswordPal</DisplayName>
     <PublisherDisplayName>Kshitij</PublisherDisplayName>

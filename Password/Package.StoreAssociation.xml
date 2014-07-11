@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <StoreAssociation xmlns="http://schemas.microsoft.com/appx/2010/storeassociation">
   <Publisher>CN=31DAE921-5108-420E-A31E-D77E1C37C4AF</Publisher>
-  <NamespacePrefix>31366Kshitij</NamespacePrefix>
   <PublisherDisplayName>Kshitij</PublisherDisplayName>
   <GeneratePackageHash>http://www.w3.org/2001/04/xmlenc#sha256</GeneratePackageHash>
   <SupportedLocales>
@@ -356,10 +355,22 @@
   </ProductReservedInfo>
   <AccountPackageIdentityNames />
   <PackageInfoList LandingUrl="https://appdev.microsoft.com:443/StorePortals/Developer/Catalog/ReleaseAnchor/45b9395f-0faf-4731-9c90-3f531d436b20">
-    <PackageInfo>
-      <OsMinVersion>6.3.0.0</OsMinVersion>
-      <PackageArchitecture>neutral</PackageArchitecture>
-      <PackageMaxArchitectureVersion>2.0.0.10</PackageMaxArchitectureVersion>
-    </PackageInfo>
+    <BundleInfo>
+      <PackageInfo>
+        <OsMinVersion>6.3.0.0</OsMinVersion>
+        <PackageArchitecture>Neutral</PackageArchitecture>
+        <PackageMaxArchitectureVersion>4.0.0.4</PackageMaxArchitectureVersion>
+      </PackageInfo>
+      <PackageInfo>
+        <OsMinVersion>6.3.0.0</OsMinVersion>
+        <PackageArchitecture>Neutral</PackageArchitecture>
+        <PackageMaxArchitectureVersion>4.0.0.4</PackageMaxArchitectureVersion>
+      </PackageInfo>
+      <PackageInfo>
+        <OsMinVersion>6.3.0.0</OsMinVersion>
+        <PackageArchitecture>Neutral</PackageArchitecture>
+        <PackageMaxArchitectureVersion>4.0.0.4</PackageMaxArchitectureVersion>
+      </PackageInfo>
+    </BundleInfo>
   </PackageInfoList>
 </StoreAssociation>
